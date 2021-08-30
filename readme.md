@@ -4,10 +4,10 @@ rust开发针对unity的命令行工具
 
 工程路径：
 ```
---------|-proj 		 //rust工程本身
-	|-build          //构建结果
-        |-doc            //文档
-	|-makefile       //构建脚本
+----|-proj 		 //rust工程本身
+    |-build          //构建结果
+    |-doc            //文档
+    |-makefile       //构建脚本
 ```
 
 ### Usage
