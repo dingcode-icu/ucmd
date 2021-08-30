@@ -10,3 +10,8 @@ futures = "0.3"
 async-std = "1"
 clap = { version = "3.0.0-beta.4", features = ["yaml"]  }
 log = "0.4"
+
+#yaml
+yaml-rust = "0.4"
+#time
+chrono = "0.4"

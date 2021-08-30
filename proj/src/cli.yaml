@@ -11,7 +11,7 @@ subcommands:
         - platform:
             short: p
             about: the platform player run with
-
+            value_name: plat
         - isrelease:
             short: d
             about: if the build type is release
