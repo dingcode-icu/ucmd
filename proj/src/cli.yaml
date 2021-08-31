@@ -9,9 +9,11 @@ subcommands:
       author: dwb <dwb@dwb.com>
       args:
         - platform:
-            short: p
-            about: the platform player run with
-            value_name: plat
+            required: true
+            about: the platform build-player run in
+        - config:
+            required: true
+            about: \*env.yaml*\ file path to confirm the publish env
         - isrelease:
-            short: d
+            short: r
             about: if the build type is release

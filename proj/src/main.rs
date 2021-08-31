@@ -3,10 +3,33 @@ mod util;
 
 use clap::{App, load_yaml, ArgMatches};
 use log::log;
+use log::debug;
+
 use std::path::Path;
 use std::collections::HashMap;
 
+fn init_logger() -> Result<(), fern::InitError>{
+    fern::Dispatch::new()
+        .format(|out, message, record| {
+            out.finish(format_args!(
+                "{}[{}][{}] {}",
+                chrono::Local::now().format("[%Y-%m-%d][%H:%M:%S]"),
+                record.target(),
+                record.level(),
+                message
+            ))
+        })
+        .level(log::LevelFilter::Debug)
+        .chain(std::io::stdout())
+        // .chain(fern::log_file("output.log")?)
+        .apply()?;
+    Ok(())
+}
+
 fn main() {
+    // init logger
+    init_logger();
+    debug!("Init logger ");
     // The YAML file is found relative to the current file, similar to how modules are found
     let yaml = load_yaml!("cli.yaml");
     let mut app = App::from(yaml);
@@ -15,15 +38,13 @@ fn main() {
     match app_m.subcommand() {
         Some((external, sub_m)) => {
             match external {
-                "build-player"=>{
+                "build-player" => {
                     subcmd::build_player::handle(sub_m);
                 }
                 _ => {
                     app.print_help().unwrap();
                 }
             }
-
-
         }
         _ => {
             println!("do nothing");
@@ -40,8 +61,7 @@ fn test_util() {
 
     //shcmd
     let cmd = "ls";
-    let out = util::shcmd::run_sh(&cmd.to_string());
-    println!("{}", out);
+    let out = util::shcmd::run_sh(&cmd.to_string(), &vec!["-l", "-a"]);
 
     //base cmd
     subcmd::build_player::run();
@@ -53,4 +73,10 @@ fn test_util() {
     let out = util::gen_ios::gradle_gen("build", map);
     // asesrt!(out = "gradlew build -Pa 1 -Pb 2")
     println!("{}", out);
+
+    //build-player
+    // subcmd::build_player::handle(&ArgMatches{
+    //     args: (),
+    //     subcommand: None
+    // })
 }
