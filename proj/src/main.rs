@@ -8,7 +8,7 @@ use log::debug;
 use std::path::Path;
 use std::collections::HashMap;
 
-fn init_logger() -> Result<(), fern::InitError>{
+fn init_logger() -> Result<(), fern::InitError> {
     fern::Dispatch::new()
         .format(|out, message, record| {
             out.finish(format_args!(
@@ -75,8 +75,4 @@ fn test_util() {
     println!("{}", out);
 
     //build-player
-    // subcmd::build_player::handle(&ArgMatches{
-    //     args: (),
-    //     subcommand: None
-    // })
 }

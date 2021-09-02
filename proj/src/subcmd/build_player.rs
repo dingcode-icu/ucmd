@@ -14,7 +14,6 @@ impl BaseCmd for BuildPlayer {}
 
 impl BuildPlayer {
     fn new(config: &str, platform: String, isr: bool) -> Self {
-
         BuildPlayer {
             build_config: BuildPlayer::parse_config(config),
             platform,
@@ -22,7 +21,7 @@ impl BuildPlayer {
         }
     }
 
-    fn gen_unity_asset(&self) ->bool {
+    fn gen_unity_asset(&self) -> bool {
         let base = &self.build_config;
         let plat = self.platform.as_str();
         let platcfg = &base[plat];
@@ -39,27 +38,27 @@ impl BuildPlayer {
                                 logfile = logfile
         );
         let args = args_str.split(" ").collect::<Vec<&str>>();
-        println!("It will cost a long time \n\
-                  Input down cmd to check the process...\n \
-                  +++++++++++++++++++++++++++++++++\n \
+        info!("It will cost a long time \n\
+                  Input down cmd to check the process...\n\
+                  +++++++++++++++++++++++++++++++++\n\
                   tail -f {logfile}\n\
-                  +++++++++++++++++++++++++++++++++\n \
+                  +++++++++++++++++++++++++++++++++\n\
                   ", logfile = logfile);
         let (suc, ret) = util::shcmd::run_sh(cmd, &args);
-        if suc{
+        if suc {
             info!("Gen unity asset success!");
             return true;
         }
-        error!("Gen unity asset failed! \n\
-               {}", ret);
+        info!("Gen unity asset failed!");
+        error!(ret);
         return false;
     }
+
     fn run(&self) {
         let suc = self.gen_unity_asset();
         if !suc {
             return;
         }
-
     }
 }
 
@@ -76,7 +75,7 @@ pub fn handle(subm: &ArgMatches) {
                 println!("Not support platform {} yet! Do nothing", v);
                 return;
             }
-            let cmd = &BuildPlayer::new(conf,v.to_string(),  isr);
+            let cmd = &BuildPlayer::new(conf, v.to_string(), isr);
             cmd.run();
         }
     };

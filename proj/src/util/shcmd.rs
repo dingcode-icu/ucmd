@@ -13,7 +13,7 @@ pub fn run_sh(cmd: &String, arg: &Vec<&str>) ->(bool, String) {
     if child.status.success(){
         return (true, ret)
     }
-    return (false, String::from_utf8_lossy(&child.stderr).into_owned());
+    return (false, String::from_utf8_lossy(&child.stdout).into_owned());
 }
 
 pub fn run_sh_async(cmd: &String, arg: &Vec<&str>) ->(bool, String) {

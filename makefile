@@ -1,9 +1,10 @@
-RUSTC = rustc
+CARGO_BIN = cargo
 
 BUILD_DIR  = "./build"
 
 # ===make===
-${RUSTC} run 
+
+${CARGO_BIN} build  --rleease
 
 # ===clean===
 clean:
