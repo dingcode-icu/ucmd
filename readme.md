@@ -1,6 +1,7 @@
 ### Desc
 
-rust开发针对unity的命令行工具
+rust练手项目
+针对unity的命令行工具
 
 工程路径：
 ```
@@ -23,24 +24,36 @@ rust开发针对unity的命令行工具
 
 ##### build-player
 
- 用于构建unity各个平台播放器，使用package.yaml进行配置
+ 用于构建unity各个平台播放器
 
-示例配置:
+>  ucmd build-player [FLAGS] <platform> <config>
+
+config是环境配置文件，配置格式使用yaml,示例配置如下:
 
 ```yaml
-unity_bin : /Applications/Unity/Hub/Editor/2019.4.26f1c1/Unity.app/Contents/MacOS/Unity"
-unity_proj : /Users/mac/data0/public_work/pinyin-unity-android/proj/pinyin
-log_output_path : /Users/mac/data0/public_work/pinyin-unity-android/build
+#==========reuqire==========
 
-#-----------------------platform-----------------------
+unity_bin : $Unity                         #unity可执行文件 ex:/Applications/Unity/Hub/Editor/2019.4.26f1c1/Unity.app/Contents/MacOS/Unity
+unity_proj : $proj root path               #unity工程路径
+log_output_path : $/Users/mac/Desktop      #unity日志输路径
+args: -quit -batchmode -isRelease:debug    #通用参数(-isRelease不可删除)
+#==========reuqire==========
+
+
+
+#==========android reuqire==========
 android:
-  - na_path : /Users/mac/data0/public_work/pinyin_android
-  - method : ZybEditor.PerformBuildAndroid.ExportProjAsset
+  na_path : $原生工程路径
+  method : Ucmd.BuildPlayer.PerformBuildAndroid.ExportProjAsset      #v1.0.0 Ucmd-buildplayer
+#==========android reuqire==========
+
+
+#==========ios reuqire==========
 ios :
-  - na_path : /Users/mac/data0/public_work/pinyin_ios
-  - method : ZybEditor.PerformBuild.ExportProjAsset
-#-----------------------platform-----------------------
-args: -quit -batchmode
+  na_path : $原生工程路径
+  method : ZybEditor.PerformBuild.ExportProjAsset
+#==========ios reuqire==========
+
 
 ```
 

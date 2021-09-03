@@ -3,6 +3,8 @@ use crate::util;
 use yaml_rust::Yaml;
 use clap::ArgMatches;
 use log::{*};
+use std::path::Path;
+use std::fs;
 
 struct BuildPlayer {
     build_config: Yaml,
@@ -38,6 +40,7 @@ impl BuildPlayer {
                                 logfile = logfile
         );
         let args = args_str.split(" ").collect::<Vec<&str>>();
+        info!("Gen the unity asset...");
         info!("It will cost a long time \n\
                   Input down cmd to check the process...\n\
                   +++++++++++++++++++++++++++++++++\n\
@@ -50,7 +53,7 @@ impl BuildPlayer {
             return true;
         }
         info!("Gen unity asset failed!");
-        error!(ret);
+        error!("{}", ret);
         return false;
     }
 
@@ -62,18 +65,25 @@ impl BuildPlayer {
     }
 }
 
-
 pub fn handle(subm: &ArgMatches) {
     let isr = subm.is_present("release");
     let PLAT_SUPPORT: Vec<&str> = vec!["android", "ios"];
     let target = subm.value_of("platform");
-    let conf = subm.value_of("config").unwrap();     //这里其实也不用match了 reuqire不符合标准clap就会过滤掉
+    let conf = subm.value_of("config").unwrap();     //这里其实也不用match了 require不符合标准clap就会过滤掉
     match target {
         None => {}
         Some(v) => {
             if !PLAT_SUPPORT.contains(&v) {
-                println!("Not support platform {} yet! Do nothing", v);
+                error!("Not support platform {} yet! Do nothing", v);
                 return;
+            }
+
+            let is_e = fs::metadata(conf).is_ok();
+            if is_e {
+                if !fs::metadata(conf).unwrap().is_file() {
+                    error!("build-player require *config* params to input the system env, check it！");
+                    return;
+                }
             }
             let cmd = &BuildPlayer::new(conf, v.to_string(), isr);
             cmd.run();
