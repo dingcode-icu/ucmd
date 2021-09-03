@@ -5,7 +5,7 @@ rust练手项目
 
 工程路径：
 ```
-----|-proj 		 //rust工程本身
+----|-proj 	     //rust工程本身
     |-build          //构建结果
     |-doc            //文档
     |-makefile       //构建脚本
