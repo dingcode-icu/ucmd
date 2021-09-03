@@ -1,4 +1,4 @@
-name: pinyin
+name: ucmd
 version: "1.0"
 author: dwb <dwb@dwb.ren>
 about: hammers in 50RMB
@@ -17,3 +17,15 @@ subcommands:
         - isrelease:
             short: r
             about: if the build type is release
+  - gen-conf:
+        about: gen config file for ucmd use
+        version : "1.0"
+        author: dwb <dwb@dwb.ren>
+        args:
+          - type:
+              required: true
+              about: supprted config type build-player|NO MORE YET:3
+          - output:
+              short: o
+              about: file path to output the config.
+              default_value: env.yaml

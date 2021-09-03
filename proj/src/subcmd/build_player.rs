@@ -3,7 +3,6 @@ use crate::util;
 use yaml_rust::Yaml;
 use clap::ArgMatches;
 use log::{*};
-use std::path::Path;
 use std::fs;
 
 struct BuildPlayer {
@@ -28,7 +27,7 @@ impl BuildPlayer {
         let plat = self.platform.as_str();
         let platcfg = &base[plat];
         let unity_bin = base["unity_bin"].as_str();
-        let logfile = base["log_output_path"].as_str().unwrap().to_string() + util::get_Ymdt_timestr().as_str() + ".log";
+        let logfile = base["log_output_path"].as_str().unwrap().to_string() + util::get_ymdt_timestr().as_str() + ".log";
         let cmd = &unity_bin.unwrap().to_string();
         let args_str = &format!("{args_base} \
         -executeMethod {method} \
@@ -67,13 +66,13 @@ impl BuildPlayer {
 
 pub fn handle(subm: &ArgMatches) {
     let isr = subm.is_present("release");
-    let PLAT_SUPPORT: Vec<&str> = vec!["android", "ios"];
+    let plat_support: Vec<&str> = vec!["android", "ios"];
     let target = subm.value_of("platform");
     let conf = subm.value_of("config").unwrap();     //这里其实也不用match了 require不符合标准clap就会过滤掉
     match target {
         None => {}
         Some(v) => {
-            if !PLAT_SUPPORT.contains(&v) {
+            if !plat_support.contains(&v) {
                 error!("Not support platform {} yet! Do nothing", v);
                 return;
             }

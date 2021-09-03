@@ -1,6 +1,4 @@
-use std::process::{Command, Stdio, ExitStatus};
-use std::borrow::{Cow, Borrow};
-use std::io::Read;
+use std::process::{Command, Stdio};
 
 pub fn run_sh(cmd: &String, arg: &Vec<&str>) ->(bool, String) {
     println!("run cmd bin:{}\n", cmd);

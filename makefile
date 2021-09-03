@@ -1,11 +1,15 @@
 CARGO_BIN = cargo
+BIN_OUTPUT = ucmd
 
-BUILD_DIR  = "./build"
+PROJ_DIR = "./proj"
+PROJ_BUILD_DIR  = "./proj/target/release/"${BIN_OUTPUT}
+
 
 # ===make===
-
-${CARGO_BIN} build  --rleease
-
+${BIN_OUTPUT}:
+	cd ${PROJ_DIR} && ${CARGO_BIN} build  --release
+	upx ${PROJ_BUILD_DIR}
 # ===clean===
 clean:
+
 	rm -rf ${BUILD_DIR}

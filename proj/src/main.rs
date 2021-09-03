@@ -1,12 +1,8 @@
 mod subcmd;
 mod util;
 
-use clap::{App, load_yaml, ArgMatches};
-use log::log;
+use clap::{App, load_yaml};
 use log::debug;
-
-use std::path::Path;
-use std::collections::HashMap;
 
 fn init_logger() -> Result<(), fern::InitError> {
     fern::Dispatch::new()
@@ -41,13 +37,16 @@ fn main() {
                 "build-player" => {
                     subcmd::build_player::handle(sub_m);
                 }
+                "gen-conf" => {
+                    subcmd::gen_conf::handle(sub_m);
+                }
                 _ => {
                     app.print_help().unwrap();
                 }
             }
         }
         _ => {
-            println!("do nothing");
+            app.print_help().unwrap();
         }
     }
 }
