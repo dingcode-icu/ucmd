@@ -11,7 +11,6 @@ struct GenConf {
 
 const BUILDPLAYER_CONF : &str = "\
 #==========require==========
-
 unity_bin : $Unity                         #unity可执行文件 ex:/Applications/Unity/Hub/Editor/2019.4.26f1c1/Unity.app/Contents/MacOS/Unity
 unity_proj : $proj root path               #unity工程路径
 log_output_path : $/Users/mac/Desktop      #unity日志输路径
@@ -19,12 +18,10 @@ args: -quit -batchmode -isRelease:debug    #通用参数(-isRelease不可删除)
 #==========require==========
 
 
-
 #==========android require==========
 android:
   na_path : $原生工程路径
   method : Ucmd.BuildPlayer.PerformBuildAndroid.ExportProjAsset      #v1.0.0 Ucmd-buildplayer
-
 #==========android require==========
 
 
@@ -32,7 +29,6 @@ android:
 ios :
   na_path : $原生工程路径
   method : ZybEditor.PerformBuild.ExportProjAsset
-
 #==========ios require==========
 ";
 

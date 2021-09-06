@@ -267,6 +267,7 @@ dependencies = [
  "chrono",
  "clap",
  "fern",
+ "lazy_static",
  "log",
  "yaml-rust",
 ]

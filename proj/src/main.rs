@@ -1,5 +1,7 @@
 mod subcmd;
 mod util;
+#[macro_use]
+extern crate lazy_static;
 
 use clap::{App, load_yaml};
 use log::debug;

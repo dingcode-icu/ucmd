@@ -1,4 +1,4 @@
-use crate::subcmd::basecmd::BaseCmd;
+use crate::subcmd::basecmd::{BaseCmd, HookSupport};
 use crate::util;
 use yaml_rust::Yaml;
 use clap::ArgMatches;
@@ -8,17 +8,15 @@ use std::fs;
 struct BuildPlayer {
     build_config: Yaml,
     platform: String,
-    isr: bool,
 }
 
 impl BaseCmd for BuildPlayer {}
 
 impl BuildPlayer {
-    fn new(config: &str, platform: String, isr: bool) -> Self {
+    fn new(config: &str, platform: String) -> Self {
         BuildPlayer {
             build_config: BuildPlayer::parse_config(config),
             platform,
-            isr,
         }
     }
 
@@ -57,6 +55,9 @@ impl BuildPlayer {
     }
 
     fn run(&self) {
+        let args = self.build_config["args"].as_str().unwrap();
+        let params = vec![args];
+        self.execute_hook(HookSupport::BeforeGenUnity, &params);
         let suc = self.gen_unity_asset();
         if !suc {
             return;
@@ -65,7 +66,6 @@ impl BuildPlayer {
 }
 
 pub fn handle(subm: &ArgMatches) {
-    let isr = subm.is_present("release");
     let plat_support: Vec<&str> = vec!["android", "ios"];
     let target = subm.value_of("platform");
     let conf = subm.value_of("config").unwrap();     //这里其实也不用match了 require不符合标准clap就会过滤掉
@@ -84,7 +84,7 @@ pub fn handle(subm: &ArgMatches) {
                     return;
                 }
             }
-            let cmd = &BuildPlayer::new(conf, v.to_string(), isr);
+            let cmd = &BuildPlayer::new(conf, v.to_string());
             cmd.run();
         }
     };
