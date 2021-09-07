@@ -14,7 +14,8 @@ use std::fs;
 
 #[derive(Debug)]
 pub enum HookSupport {
-    BeforeGenUnity
+    BeforeGenUnity,
+    AfterGenUnity
 }
 
 impl fmt::Display for HookSupport {

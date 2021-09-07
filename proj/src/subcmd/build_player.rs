@@ -25,7 +25,7 @@ impl BuildPlayer {
         let plat = self.platform.as_str();
         let platcfg = &base[plat];
         let unity_bin = base["unity_bin"].as_str();
-        let logfile = base["log_output_path"].as_str().unwrap().to_string() + util::get_ymdt_timestr().as_str() + ".log";
+        let logfile = base["log_output_path"].as_str().unwrap().to_string() + util::get_strfmt_timestr("%Y%m%T%d").as_str() + ".log";
         let cmd = &unity_bin.unwrap().to_string();
         let args_str = &format!("{args_base} \
         -executeMethod {method} \
@@ -62,6 +62,7 @@ impl BuildPlayer {
         if !suc {
             return;
         }
+        self.execute_hook(HookSupport::AfterGenUnity, &params);
     }
 }
 

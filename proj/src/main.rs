@@ -1,28 +1,8 @@
 mod subcmd;
-mod util;
 #[macro_use]
 extern crate lazy_static;
-
+use rcmd_core::{util, log, init_logger};
 use clap::{App, load_yaml};
-use log::debug;
-
-fn init_logger() -> Result<(), fern::InitError> {
-    fern::Dispatch::new()
-        .format(|out, message, record| {
-            out.finish(format_args!(
-                "{}[{}][{}] {}",
-                chrono::Local::now().format("[%Y-%m-%d][%H:%M:%S]"),
-                record.target(),
-                record.level(),
-                message
-            ))
-        })
-        .level(log::LevelFilter::Debug)
-        .chain(std::io::stdout())
-        // .chain(fern::log_file("output.log")?)
-        .apply()?;
-    Ok(())
-}
 
 fn main() {
     // init logger
