@@ -1,6 +1,5 @@
 pub mod util;
 pub mod pkg;
-pub mod log;
 
 #[cfg(test)]
 mod tests {

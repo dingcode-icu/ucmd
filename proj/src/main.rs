@@ -1,8 +1,7 @@
 mod subcmd;
-#[macro_use]
-extern crate lazy_static;
-use rcmd_core::{util, log, init_logger};
+use rcmd_core::{init_logger};
 use clap::{App, load_yaml};
+use log::{debug};
 
 fn main() {
     // init logger

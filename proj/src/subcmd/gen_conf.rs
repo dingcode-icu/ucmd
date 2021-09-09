@@ -49,7 +49,7 @@ impl GenConf{
                 let mut outf = std::fs::File::create(&self.out_file).expect(format!("create config file {} failed!", &self.out_file).as_str());
                 outf.write_all(BUILDPLAYER_CONF.as_bytes()).expect(format!("write content to {} failed!", self.out_file).as_str());
                 info!("Gen suc!");
-            }
+                }
         }
     }
 }

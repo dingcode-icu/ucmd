@@ -3,7 +3,6 @@ extern crate yaml_rust;
 use yaml_rust::{YamlLoader};
 use std::io::Read;
 use self::yaml_rust::Yaml;
-use crate::util;
 use std::path::Path;
 use std::env;
 use log::{debug, warn, info};
@@ -11,6 +10,7 @@ use std::collections::HashMap;
 use std::fmt;
 use std::fmt::Formatter;
 use std::fs;
+use rcmd_core::util;
 
 #[derive(Debug)]
 pub enum HookSupport {

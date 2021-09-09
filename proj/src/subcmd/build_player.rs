@@ -1,9 +1,9 @@
 use crate::subcmd::basecmd::{BaseCmd, HookSupport};
-use crate::util;
 use yaml_rust::Yaml;
 use clap::ArgMatches;
 use log::{*};
 use std::fs;
+use rcmd_core::util;
 
 struct BuildPlayer {
     build_config: Yaml,
@@ -78,12 +78,19 @@ pub fn handle(subm: &ArgMatches) {
                 return;
             }
 
+            let logout = ||{
+                error!("build-player require *config* params to input the system env, check it！");
+            };
             let is_e = fs::metadata(conf).is_ok();
             if is_e {
                 if !fs::metadata(conf).unwrap().is_file() {
-                    error!("build-player require *config* params to input the system env, check it！");
+                    logout();
                     return;
                 }
+            }
+            else {
+                logout();
+                return;
             }
             let cmd = &BuildPlayer::new(conf, v.to_string());
             cmd.run();
