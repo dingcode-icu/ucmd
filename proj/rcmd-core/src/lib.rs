@@ -1,11 +1,15 @@
 pub mod util;
 pub mod pkg;
 
-#[cfg(test)]
+use util::nsdk::Get;
+
 mod tests {
+    use crate::util::nsdk::Get;
+
     #[test]
     fn it_works() {
-        assert_eq!(2 + 2, 4);
+        let resp = Get("http://www.baidu.com");
+        println!("test here111");
     }
 }
 

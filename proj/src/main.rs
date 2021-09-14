@@ -1,7 +1,9 @@
 mod subcmd;
-use rcmd_core::{init_logger};
+use rcmd_core::{init_logger, util};
 use clap::{App, load_yaml};
 use log::{debug};
+use std::path::Path;
+use std::collections::HashMap;
 
 fn main() {
     // init logger
@@ -33,6 +35,7 @@ fn main() {
 }
 
 #[test]
+
 fn test_util() {
     // filesys
     let fp = "/Users/mac/data0/public_work/pinyin-unity-android/doc/handover";
@@ -44,15 +47,5 @@ fn test_util() {
     let out = util::shcmd::run_sh(&cmd.to_string(), &vec!["-l", "-a"]);
 
     //base cmd
-    subcmd::build_player::run();
-
-    //gen_android
-    let mut map = HashMap::new();
-    map.insert("a", "1");
-    map.insert("b", "2");
-    let out = util::gen_ios::gradle_gen("build", map);
-    // asesrt!(out = "gradlew build -Pa 1 -Pb 2")
-    println!("{}", out);
-
-    //build-player
+    // subcmd::build_player::run();
 }

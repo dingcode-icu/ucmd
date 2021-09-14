@@ -39,7 +39,7 @@ impl BuildPlayer {
         let args = args_str.split(" ").collect::<Vec<&str>>();
         info!("Gen the unity asset...");
         info!("It will cost a long time \n\
-                  Input down cmd to check the process...\n\
+                  Enter the following command to check the process...\n\
                   +++++++++++++++++++++++++++++++++\n\
                   tail -f {logfile}\n\
                   +++++++++++++++++++++++++++++++++\n\
