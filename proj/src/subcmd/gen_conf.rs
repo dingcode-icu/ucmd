@@ -28,7 +28,7 @@ android:
 #==========ios require==========
 ios :
   na_path : $原生工程路径
-  method : ZybEditor.PerformBuild.ExportProjAsset
+  method : Ucmd.BuildPlayer.PerformBuildIOS.ExportIPA
 #==========ios require==========
 ";
 
