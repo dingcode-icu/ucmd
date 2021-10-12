@@ -12,7 +12,8 @@ pub fn run_sh(cmd: &String, arg: &Vec<&str>) -> (bool, String) {
     if child.status.success() {
         return (true, ret);
     }
-    return (false, String::from_utf8_lossy(&child.stdout).into_owned());
+    println!("{}", String::from_utf8_lossy(&child.stdout).into_owned());
+    return (false, String::from_utf8_lossy(&child.stderr).into_owned());
 }
 
 ///同步执行系统命令(todo)

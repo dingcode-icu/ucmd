@@ -5,7 +5,7 @@ use std::io::Read;
 use self::yaml_rust::Yaml;
 use std::path::Path;
 use std::env;
-use log::{debug, warn, info};
+use log::{debug, warn, info, error};
 use std::collections::HashMap;
 use std::fmt;
 use std::fmt::Formatter;
@@ -50,7 +50,9 @@ pub(crate) trait BaseCmd {
             let (iss, ret)  = util::shcmd::run_sh(&String::from(h_path.to_str().unwrap()), args);
             if iss {
                 info!("{}", ret);
+                return;
             }
+            error!("hook error:{}", ret);
             return;
         }
         debug!("{}", format!("No hook {}", &h_path.to_str().unwrap()));

@@ -9,28 +9,7 @@ struct GenConf {
 }
 
 
-const BUILDPLAYER_CONF : &str = "\
-#==========require==========
-unity_bin : $Unity                         #unity可执行文件 ex:/Applications/Unity/Hub/Editor/2019.4.26f1c1/Unity.app/Contents/MacOS/Unity
-unity_proj : $proj root path               #unity工程路径
-log_output_path : $/Users/mac/Desktop      #unity日志输路径
-args: -quit -batchmode -isRelease:debug    #通用参数(-isRelease不可删除)
-#==========require==========
-
-
-#==========android require==========
-android:
-  na_path : $原生工程路径
-  method : Ucmd.BuildPlayer.PerformBuildAndroid.ExportProjAsset      #v1.0.0 Ucmd-buildplayer
-#==========android require==========
-
-
-#==========ios require==========
-ios :
-  na_path : $原生工程路径
-  method : Ucmd.BuildPlayer.PerformBuildIOS.ExportIPA
-#==========ios require==========
-";
+const BUILDERS_CONF: &str = include_str!("../static/build-player");
 
 impl BaseCmd for GenConf{}
 
@@ -46,8 +25,8 @@ impl GenConf{
         let _val = String::from("build-player");
         match &self.conf_type{
             _val=>{
-                let mut outf = std::fs::File::create(&self.out_file).expect(format!("create config file {} failed!", &self.out_file).as_str());
-                outf.write_all(BUILDPLAYER_CONF.as_bytes()).expect(format!("write content to {} failed!", self.out_file).as_str());
+                let mut f = std::fs::File::create(&self.out_file).expect(format!("create config file {} failed!", &self.out_file).as_str());
+                f.write_all(BUILDERS_CONF.as_bytes()).expect(format!("write content to {} failed!", self.out_file).as_str());
                 info!("Gen suc!");
                 }
         }

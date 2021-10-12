@@ -1,0 +1,17 @@
+#!/usr/bin/env python3 
+import sys
+import os
+
+
+def sel_run():
+    print("Wait to handle after build...")
+    if sys.argv[1] == "ios":
+        from after.ios_at import run
+        run()
+    elif sys.argv[1] == "android":
+        from after.android_at import run 
+        run()
+    print("Suc!")
+
+if __name__ == "__main__":
+    sel_run()

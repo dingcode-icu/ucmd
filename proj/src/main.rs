@@ -45,7 +45,4 @@ fn test_util() {
     //shcmd
     let cmd = "ls";
     let out = util::shcmd::run_sh(&cmd.to_string(), &vec!["-l", "-a"]);
-
-    //base cmd
-    // subcmd::build_player::run();
 }

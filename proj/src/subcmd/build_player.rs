@@ -4,6 +4,8 @@ use clap::ArgMatches;
 use log::{*};
 use std::fs;
 use rcmd_core::util;
+use std::time::Duration;
+use std::ops::Index;
 
 struct BuildPlayer {
     build_config: Yaml,
@@ -23,7 +25,7 @@ impl BuildPlayer {
     fn gen_unity_asset(&self) -> bool {
         let base = &self.build_config;
         let plat = self.platform.as_str();
-        let platcfg = &base[plat];
+        let cfg = &base[plat];
         let unity_bin = base["unity_bin"].as_str();
         let logfile = base["log_output_path"].as_str().unwrap().to_string() + util::get_strfmt_timestr("%Y%m%T%d").as_str() + ".log";
         let cmd = &unity_bin.unwrap().to_string();
@@ -32,7 +34,7 @@ impl BuildPlayer {
         -projectPath {unity_proj} \
         -logfile {logfile}",
                                 args_base = base["args"].as_str().unwrap(),
-                                method = platcfg["method"].as_str().unwrap(),
+                                method = cfg["method"].as_str().unwrap(),
                                 unity_proj = base["unity_proj"].as_str().unwrap(),
                                 logfile = logfile
         );
@@ -50,19 +52,35 @@ impl BuildPlayer {
             return true;
         }
         info!("Gen unity asset failed!");
-        error!("{}", ret);
+        if ret.len() > 0 {
+            error!("{}", ret);
+        }
+        else{
+            error!("Check the error in unity output logfile! ")
+        }
         return false;
     }
 
     fn run(&self) {
         let args = self.build_config["args"].as_str().unwrap();
-        let params = vec![args];
-        self.execute_hook(HookSupport::BeforeGenUnity, &params);
+        // before hook
+        let bf_p = vec![args];
+        self.execute_hook(HookSupport::BeforeGenUnity, &bf_p);
         let suc = self.gen_unity_asset();
         if !suc {
             return;
         }
-        self.execute_hook(HookSupport::AfterGenUnity, &params);
+        // after hook
+        let base = &self.build_config;
+        let plat = self.platform.as_str();
+        let cfg = &base[plat];
+        let is = cfg.index("path").is_null();
+        let af_p = if is == false {
+            vec![plat, cfg["path"].as_str().unwrap(), base["unity_proj"].as_str().unwrap()]
+        } else {
+            vec![plat, "", base["unity_proj"].as_str().unwrap()]
+        };
+        self.execute_hook(HookSupport::AfterGenUnity, &af_p);
     }
 }
 
@@ -78,7 +96,7 @@ pub fn handle(subm: &ArgMatches) {
                 return;
             }
 
-            let logout = ||{
+            let logout = || {
                 error!("build-player require *config* params to input the system env, check it！");
             };
             let is_e = fs::metadata(conf).is_ok();
@@ -87,8 +105,7 @@ pub fn handle(subm: &ArgMatches) {
                     logout();
                     return;
                 }
-            }
-            else {
+            } else {
                 logout();
                 return;
             }
