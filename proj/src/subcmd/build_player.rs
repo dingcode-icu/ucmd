@@ -74,7 +74,7 @@ impl BuildPlayer {
         let base = &self.build_config;
         let plat = self.platform.as_str();
         let cfg = &base[plat];
-        let is = cfg.index("path").is_null();
+        let is = cfg["path"].is_badvalue();
         let af_p = if is == false {
             vec![plat, cfg["path"].as_str().unwrap(), base["unity_proj"].as_str().unwrap()]
         } else {

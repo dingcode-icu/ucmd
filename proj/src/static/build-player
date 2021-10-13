@@ -2,7 +2,15 @@
 unity_bin : /Applications/Unity/Hub/Editor/2019.4.26f1c1/Unity.app/Contents/MacOS/Unity                         #unity可执行文件 ex:/Applications/Unity/Hub/Editor/2019.4.26f1c1/Unity.app/Contents/MacOS/Unity
 unity_proj : $proj root path               #unity工程路径
 log_output_path : /Users/mac/Desktop       #unity日志输路径
-args: -quit -batchmode -isRelease:debug    #通用参数(-isRelease不可删除)
+
+#通用参数(
+#  -isRelease:debug  (必要参数)编译选项(ex:debug release)
+#  -buildSymbols:xx  (可选参数)宏定义(ex:MAGIC_LOGIC)
+#  -env:xxx          (可选参数)环境定义(ex:online, dev, test)
+#  )
+
+
+args: -quit -batchmode -isRelease:debug
 #==========require==========
 
 
