@@ -6,6 +6,7 @@ use std::fs;
 use rcmd_core::util;
 use std::time::Duration;
 use std::ops::Index;
+use std::process::exit;
 
 struct BuildPlayer {
     build_config: Yaml,
@@ -68,7 +69,7 @@ impl BuildPlayer {
         self.execute_hook(HookSupport::BeforeGenUnity, &bf_p);
         let suc = self.gen_unity_asset();
         if !suc {
-            return;
+            exit(2);
         }
         // after hook
         let base = &self.build_config;
