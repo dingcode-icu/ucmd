@@ -15,7 +15,7 @@ use rcmd_core::util;
 #[derive(Debug)]
 pub enum HookSupport {
     BeforeGenUnity,
-    AfterGenUnity
+    AfterGenUnity,
 }
 
 impl fmt::Display for HookSupport {
@@ -47,12 +47,14 @@ pub(crate) trait BaseCmd {
         let mf = fs::metadata(&h_path);
         if mf.is_ok() {
             info!("{}", format!("found the hook file {}", &h_path.to_str().unwrap()));
-            let (iss, ret)  = util::shcmd::run_sh(&String::from(h_path.to_str().unwrap()), args);
+            let (iss, ret) = util::shcmd::run_sh(&String::from(h_path.to_str().unwrap()), args);
             if iss {
                 info!("{}", ret);
                 return;
             }
-            error!("hook error:{}", ret);
+            if ret.len() > 0 {
+                error!("hook error:{}", ret);
+            }
             return;
         }
         debug!("{}", format!("No hook {}", &h_path.to_str().unwrap()));

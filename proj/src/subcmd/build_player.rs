@@ -64,8 +64,9 @@ impl BuildPlayer {
 
     fn run(&self) {
         let args = self.build_config["args"].as_str().unwrap();
+        let hook_args = self.build_config["hook_args"].as_str().unwrap();
         // before hook
-        let bf_p = vec![args];
+        let bf_p = vec![args, hook_args];
         self.execute_hook(HookSupport::BeforeGenUnity, &bf_p);
         let suc = self.gen_unity_asset();
         if !suc {
@@ -75,7 +76,7 @@ impl BuildPlayer {
         let base = &self.build_config;
         let plat = self.platform.as_str();
         let cfg = &base[plat];
-        let is = cfg["path"].is_badvalue();
+        let is = cfg["path"].is_badvalue() || cfg["path"].is_null();
         let af_p = if is == false {
             vec![plat, cfg["path"].as_str().unwrap(), base["unity_proj"].as_str().unwrap()]
         } else {
