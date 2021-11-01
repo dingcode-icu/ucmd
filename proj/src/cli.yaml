@@ -3,6 +3,23 @@ version: "1.0"
 author: dwb <dwb@dwb.ren>
 about: hammers in 50RMB
 subcommands:
+  - build-ab:
+      about: build the assetbundle
+      version: "1.0"
+      author: dwb <dwb@dwb.ren>
+      args:
+        - platform:
+            required: true
+            about: the ab assetbundle build for
+        - relpaths:
+            required: true
+            about: the ab build path relative to unity proj's root-path
+        - isonly-prefab:
+            short: p
+            about: if only include the prefab file inde
+        - config :
+            required: true
+            about: \*env.yaml*\ file path to confirm the publish env
   - build-player:
       about: build the player
       version: "1.0"
@@ -10,7 +27,7 @@ subcommands:
       args:
         - platform:
             required: true
-            about: the platform build-player run in
+            about: the platform env run in
         - config:
             required: true
             about: \*env.yaml*\ file path to confirm the publish env
@@ -24,7 +41,7 @@ subcommands:
         args:
           - type:
               required: true
-              about: supprted config type build-player|NO MORE YET:3
+              about: supprted config type env|NO MORE YET:3
           - output:
               short: o
               about: file path to output the config.

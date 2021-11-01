@@ -1,9 +1,14 @@
 mod subcmd;
-use rcmd_core::{init_logger, util};
-use clap::{App, load_yaml};
-use log::{debug};
+
+///logger about
+
+pub use log::{debug};
+///clap
+pub use clap::{App, load_yaml};
+
 use std::path::Path;
 use std::collections::HashMap;
+use rcmd_core::Log::init_logger;
 
 fn main() {
     // init logger
@@ -17,11 +22,14 @@ fn main() {
     match app_m.subcommand() {
         Some((external, sub_m)) => {
             match external {
+                "gen-conf" => {
+                    subcmd::gen_conf::handle(sub_m);
+                }
                 "build-player" => {
                     subcmd::build_player::handle(sub_m);
                 }
-                "gen-conf" => {
-                    subcmd::gen_conf::handle(sub_m);
+                "build-ab" => {
+                    subcmd::build_ab::handle(sub_m);
                 }
                 _ => {
                     app.print_help().unwrap();
@@ -35,7 +43,6 @@ fn main() {
 }
 
 #[test]
-
 fn test_util() {
     // filesys
     let fp = "/Users/mac/data0/public_work/pinyin-unity-android/doc/handover";

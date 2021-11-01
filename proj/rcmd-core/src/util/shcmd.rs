@@ -1,7 +1,7 @@
 use std::process::{Command, Stdio};
 
 ///执行系统命令
-pub fn run_sh(cmd: &String, arg: &Vec<&str>) -> (bool, String) {
+pub fn run_sh(cmd: &str, arg: &Vec<&str>) -> (bool, String) {
     println!("run cmd bin:{}\n", cmd);
     println!("args is :{:?}\n", arg);
     let child = Command::new(cmd)

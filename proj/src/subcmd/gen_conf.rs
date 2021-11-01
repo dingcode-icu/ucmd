@@ -9,22 +9,13 @@ struct GenConf {
 }
 
 
-const BUILDERS_CONF: &str = include_str!("../static/build-player");
+const BUILDERS_CONF: &str = include_str!("../static/env");
 
-impl BaseCmd for GenConf{}
-
-impl GenConf{
-    fn new(ctype: String, outf: String) -> Self {
-        GenConf{
-            conf_type: ctype.to_string(),
-            out_file: outf.to_string()
-        }
-    }
-
+impl BaseCmd for GenConf{
     fn run(&self){
-        let _val = String::from("build-player");
+        let v= String::from("build-player");
         match &self.conf_type{
-            _val=>{
+            v =>{
                 let mut f = std::fs::File::create(&self.out_file).expect(format!("create config file {} failed!", &self.out_file).as_str());
                 f.write_all(BUILDERS_CONF.as_bytes()).expect(format!("write content to {} failed!", self.out_file).as_str());
                 info!("Gen suc!");
@@ -33,10 +24,19 @@ impl GenConf{
     }
 }
 
+impl GenConf{
+    fn new(ctype: String, outf: String) -> Self {
+        GenConf{
+            conf_type: ctype.to_string(),
+            out_file: outf.to_string()
+        }
+    }
+}
+
 pub fn handle(subm: &ArgMatches) {
-    let conf_support: Vec<&str> = vec!["build-player"];
+    let conf_support: Vec<&str> = vec!["env"];
     let target = subm.value_of("type");
-    let outf = subm.value_of("output").unwrap();
+    let o = subm.value_of("output").unwrap();
     match target {
         None => {}
         Some(v) => {
@@ -44,7 +44,7 @@ pub fn handle(subm: &ArgMatches) {
                 error!("{}", format!("Not support conf type {} yet! Do nothing", v));
                 return;
             }
-            let cmd = &GenConf::new(String::from(v), String::from(outf));
+            let cmd = &GenConf::new(String::from(v), String::from(o));
             cmd.run();
         }
     };
