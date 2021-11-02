@@ -14,6 +14,7 @@ const BUILDERS_CONF: &str = include_str!("../static/env");
 impl BaseCmd for GenConf{
     fn run(&self){
         let v= String::from("build-player");
+        let v = String::from("build-ab");
         match &self.conf_type{
             v =>{
                 let mut f = std::fs::File::create(&self.out_file).expect(format!("create config file {} failed!", &self.out_file).as_str());

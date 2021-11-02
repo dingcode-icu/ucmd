@@ -12,7 +12,7 @@ struct BuildAb {
     platform: String,
     ///是否只包含prefab
     is_p: bool,
-    ///要打包prefab路径
+    ///要打包prefab路径,用逗号分隔
     paths:Vec<String>,
 }
 
@@ -37,7 +37,7 @@ impl BaseCmd for BuildAb {
 impl BuildAb {
     fn new(config: &str, platform: String, is_only_prefab: bool, paths: Vec<String>) -> Self{
         BuildAb {
-            build_config: BuildAb::parse_config(config),
+            build_config: BuildAb::parse_config (config),
             platform,
             is_p: is_only_prefab,
             paths
