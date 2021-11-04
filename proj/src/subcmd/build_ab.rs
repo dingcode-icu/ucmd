@@ -25,7 +25,10 @@ struct BuildAb {
 impl BaseCmd for BuildAb {
     fn run(&self) {
         // before hook
-        let bf_p = vec![];
+        let args = self.build_config["args"].as_str().unwrap();
+        let hook_args = self.build_config["hook_args"].as_str().unwrap();
+        // before hook
+        let bf_p = vec![args, hook_args];
         self.execute_hook(HookSupport::BeforeGenAb, &bf_p);
         // build list
         let o = self.ab_config["asset_paths"].as_hash().unwrap();
@@ -35,7 +38,7 @@ impl BaseCmd for BuildAb {
             let c1 = format!("{}={}|", i.0, i.1);
             ex_mcd += c1.as_str();
         }
-        let suc = self.gen_unity_asset(&self.build_config, self.platform.as_str(), BuildType::Ab, format!("-abMap:{}", ex_mcd).as_str());
+        let suc = self.gen_unity_asset(&self.build_config, self.platform.as_str(), BuildType::Ab, format!("{} -abMap:{}", hook_args, ex_mcd).as_str());
         if !suc {
             exit(2);
         }

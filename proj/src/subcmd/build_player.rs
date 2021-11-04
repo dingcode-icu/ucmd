@@ -22,7 +22,7 @@ impl BaseCmd for BuildPlayer {
         // before hook
         let bf_p = vec![args, hook_args];
         self.execute_hook(HookSupport::BeforeGenUnity, &bf_p);
-        let suc = self.gen_unity_asset(&self.build_config, &self.platform,  if self.platform == "ios" { BuildType::Ios } else {BuildType::Android}, "");
+        let suc = self.gen_unity_asset(&self.build_config, &self.platform,  if self.platform == "ios" { BuildType::Ios } else {BuildType::Android}, hook_args);
         if !suc {
             exit(2);
         }
