@@ -3,6 +3,14 @@ use std::process::exit;
 use yaml_rust::Yaml;
 use rcmd_core::{util, ArgMatches};
 use log::{*};
+use std::hash::Hash;
+use std::collections::HashMap;
+use serde_json::Value;
+
+
+struct AbConfig {
+    asset_paths: HashMap<String, String>,
+}
 
 ///构建asset bundle命令
 struct BuildAb {
@@ -10,20 +18,24 @@ struct BuildAb {
     build_config: Yaml,
     ///目标平台
     platform: String,
-    ///是否只包含prefab
-    is_p: bool,
-    ///要打包prefab路径,用逗号分隔
-    paths:Vec<String>,
+    ///bundle配置
+    ab_config: Yaml,
 }
 
 impl BaseCmd for BuildAb {
     fn run(&self) {
-        let args = self.build_config["args"].as_str().unwrap();
-        let hook_args = self.build_config["hook_args"].as_str().unwrap();
         // before hook
-        let bf_p = vec![args, hook_args];
+        let bf_p = vec![];
         self.execute_hook(HookSupport::BeforeGenAb, &bf_p);
-        let suc = self.gen_unity_asset(&self.build_config, self.platform.as_str(), BuildType::Ab);
+        // build list
+        let o = self.ab_config["asset_paths"].as_hash().unwrap();
+        let items: HashMap<&str, &str> = o.iter().map(|t| (t.0.as_str().unwrap(), t.1.as_str().unwrap())).collect();
+        let mut ex_mcd = String::new();
+        for i in items {
+            let c1 = format!("{}={}|", i.0, i.1);
+            ex_mcd += c1.as_str();
+        }
+        let suc = self.gen_unity_asset(&self.build_config, self.platform.as_str(), BuildType::Ab, format!("-abMap:{}", ex_mcd).as_str());
         if !suc {
             exit(2);
         }
@@ -35,25 +47,19 @@ impl BaseCmd for BuildAb {
 }
 
 impl BuildAb {
-    fn new(config: &str, platform: String, is_only_prefab: bool, paths: Vec<String>) -> Self{
+    fn new(platform: String, build_conf: &str, ab_conf: &str) -> Self {
         BuildAb {
-            build_config: BuildAb::parse_config (config),
+            build_config: BuildAb::parse_yaml(build_conf),
             platform,
-            is_p: is_only_prefab,
-            paths
+            ab_config: BuildAb::parse_yaml(ab_conf),
         }
     }
 }
 
 pub fn handle(subm: &ArgMatches) {
-    let is_p = subm.value_of("is_only_prefab").unwrap_or("false");
     let target = subm.value_of("platform");
-    let conf = subm.value_of("config").unwrap();
-    let paths = subm.value_of("relpaths").unwrap().split(",").collect::<Vec<&str>>();
-    let mut paths_S = vec![];
-    for p in paths {
-        paths_S.push(String::from(p));
-    }
-    let cmd = &BuildAb::new(conf, target.unwrap().to_string(), is_p == "true", paths_S);
+    let ab_config = subm.value_of("ab_config").unwrap();
+    let env = subm.value_of("env").unwrap();
+    let cmd = &BuildAb::new(target.unwrap().to_string(), env, ab_config);
     cmd.run();
 }

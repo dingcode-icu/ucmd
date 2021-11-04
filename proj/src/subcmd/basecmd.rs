@@ -51,7 +51,7 @@ pub(crate) trait BaseCmd {
     fn check_env_file(path: &str) -> bool {
         let logout = || {
             error!("env require *config* params to input the system env, check it！");
-            false
+                false
         };
         let is_e = fs::metadata(path).is_ok();
         if is_e {
@@ -74,7 +74,7 @@ pub(crate) trait BaseCmd {
     }
 
     ///加载环境配置，标准格式可通过gen_config生成
-    fn parse_config(conf: &str) -> Yaml {
+    fn parse_yaml(conf: &str) -> Yaml {
         let mut file = std::fs::File::open(conf).unwrap();
         let mut contents = String::new();
         file.read_to_string(&mut contents).unwrap();
@@ -82,6 +82,14 @@ pub(crate) trait BaseCmd {
         let docs = YamlLoader::load_from_str(contents.as_str()).unwrap();
         let doc = &docs[0];
         return doc.to_owned();
+    }
+
+    fn parse_json(conf: &str) -> serde_json::Value{
+        let mut file = std::fs::File::open(conf).unwrap();
+        let mut contents = String::new();
+        file.read_to_string(&mut contents).unwrap();
+        drop(file);
+        serde_json::from_str(&contents).unwrap()
     }
 
     ///执行hook,hook类似git的hook机制，在构建关键节点执行本地脚本
@@ -108,7 +116,7 @@ pub(crate) trait BaseCmd {
     }
 
     ///执行unity cmd
-    fn gen_unity_asset(&self, config: &Yaml, plat: &str, build_type: BuildType) -> bool {
+    fn gen_unity_asset(&self, config: &Yaml, plat: &str, build_type: BuildType, ex_cmd: &str) -> bool {
         let base = config;
         let cfg = &base[plat];
         let args_base = base["args"].as_str().unwrap();
@@ -119,11 +127,16 @@ pub(crate) trait BaseCmd {
         let args_str = &format!("{args_base} \
         -executeMethod {method} \
         -projectPath {unity_proj} \
-        -logfile {logfile}",
+        -logfile {logfile} \
+        -targetPlatform:{plat} \
+        {ex_cmd}",
+
                                 args_base = args_base,
                                 method = method,
                                 unity_proj = unity_proj,
-                                logfile = logfile
+                                logfile = logfile,
+                                plat = plat,
+                                ex_cmd = ex_cmd
         );
         let args = args_str.split(" ").collect::<Vec<&str>>();
         info!("Gen the unity asset...");
