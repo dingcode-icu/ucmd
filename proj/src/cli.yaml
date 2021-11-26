@@ -41,7 +41,7 @@ subcommands:
       args:
         - type:
             required: true
-            about: supprted config type env|NO MORE YET:3
+            about: supported config type env|NO MORE YET:3
         - output:
             short: o
             about: file path to output the config.

@@ -1,6 +1,14 @@
+///静态帮助类
 pub mod util;
+
+///打包
 pub mod pkg;
 
+///透传暴露的lib
+pub mod Ex {
+    pub use chrono;
+}
+///日志模块
 pub mod Log {
     pub use log::{*};
     pub fn init_logger() -> Result<(), fern::InitError> {
