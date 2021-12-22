@@ -43,7 +43,7 @@ pub fn zip_dir<T>(it: &mut dyn Iterator<Item=DirEntry>, prefix: &str, writer: T)
     where T: Write + Seek {
     let mut zip = zip::ZipWriter::new(writer);
     let options = FileOptions::default()
-        .compression_method(zip::CompressionMethod::Bzip2)//直接用了bzip2压缩方式，其它参看枚举
+        .compression_method(zip::CompressionMethod::Stored)//直接用了bzip2压缩方式，其它参看枚举
         .unix_permissions(0o755);//unix系统权限
 
     let mut buffer = Vec::new();
@@ -51,13 +51,10 @@ pub fn zip_dir<T>(it: &mut dyn Iterator<Item=DirEntry>, prefix: &str, writer: T)
         let path = entry.path();
         //zip压缩一个文件时，会把它的全路径当成文件名(在下面的解压函数中打印文件名可知)
         //这里是去掉目录前缀
-        println!("prefix  {:?} ...", prefix);
         let name = path.strip_prefix(Path::new(prefix)).unwrap();
-        println!("name  {:?} ...", name);
         // Write file or directory explicitly
         // Some unzip tools unzip files with directory paths correctly, some do not!
         if path.is_file() {
-            println!("adding file {:?} as {:?} ...", path, name);
             zip.start_file_from_path(name, options)?;
             let mut f = File::open(path)?;
 
@@ -67,7 +64,6 @@ pub fn zip_dir<T>(it: &mut dyn Iterator<Item=DirEntry>, prefix: &str, writer: T)
         } else if name.as_os_str().len() != 0 {//目录
             // Only if not root! Avoids path spec / warning
             // and mapname conversion failed error on unzip
-            println!("adding dir {:?} as {:?} ...", path, name);
             zip.add_directory_from_path(name, options)?;
         }
     }
