@@ -4,6 +4,26 @@ use std::fs::{File};
 use std::io::{Seek, Write, Read};
 use zip::write::FileOptions;
 use walkdir::DirEntry;
+use crypto::md5::Md5;
+use crypto::digest::Digest;
+use zip::result::ZipError;
+use zip_extensions::*;
+
+///获取文件的md5值
+/// ## Example:
+/// ```
+/// use rcmd_core::util::filesys::file_md5;
+/// let ret: String = file_md5("c://a.txt");
+/// ```
+pub fn file_md5(path: &str) -> String{
+    let mut f = File::open(path).unwrap();
+    let mut buffer = Vec::new();
+    f.read_to_end(&mut buffer).unwrap();
+
+    let mut hasher = Md5::new();
+    hasher.input(&buffer);
+    return hasher.result_str();
+}
 
 
 ///拷贝当前文件夹内所有文件到指定文件夹
@@ -69,4 +89,10 @@ pub fn zip_dir<T>(it: &mut dyn Iterator<Item=DirEntry>, prefix: &str, writer: T)
     }
     zip.finish()?;
     Result::Ok(())
+}
+
+pub fn unzip_to_path(zip_f: &str, tar_p: &str) -> Result<(), ZipError>{
+    let zip_ar = zip::ZipArchive::new(File::open(zip_f).unwrap()).unwrap();
+    let out = Path::new(tar_p);
+    zip_extract(&Path::new(zip_f).to_path_buf(), &out.to_path_buf())
 }

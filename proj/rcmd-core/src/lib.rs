@@ -34,6 +34,7 @@ pub mod Log {
 pub use clap;
 pub use clap::{ArgMatches};
 
+pub mod queue;
 
 mod tests {
     use crate::util::filesys::zip_dir;
@@ -46,7 +47,7 @@ mod tests {
          use walkdir;
         let src_dir = "/Users/mac/data0/public_work/ucmd/proj/rcmd-core/test/ziptest";
         let pf = Path::new(src_dir);
-        let zipfile = std::fs::File::create("test.zip").unwrap();
+        let zipfile = std::fs::File::create("test/test.zip").unwrap();
         let mut ws = WalkDir::new(pf);
         zip_dir(
             &mut ws.into_iter()
