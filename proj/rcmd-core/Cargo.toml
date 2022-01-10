@@ -2,6 +2,11 @@
 name = "rcmd-core"
 version = "0.1.0"
 edition = "2018"
+authors = ["dwb"]
+description = "base commond tools for gamedevalop.Most of them are i/o, zip, time, crypto helpful static methods."
+license = "0BSD OR MIT OR Apache-2.0"
+keywords = ["command", "game develop", "dwb"]
+
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
