@@ -1,14 +1,9 @@
 use crate::subcmd::basecmd::{BaseCmd, HookSupport, BuildType};
 use std::process::exit;
-use rcmd_core::{util, ArgMatches};
-use std::hash::Hash;
+use rcmd_core::{ArgMatches};
 use std::collections::HashMap;
 use rcmd_core::Ex::yaml_rust::Yaml;
 
-
-struct AbConfig {
-    asset_paths: HashMap<String, String>,
-}
 
 ///构建asset bundle命令
 struct BuildAb {
@@ -23,10 +18,10 @@ struct BuildAb {
 impl BaseCmd for BuildAb {
     fn run(&self) {
         // before hook
-        let args = self.build_config["args"].as_str().unwrap();
-        let hook_args = self.build_config["hook_args"].as_str().unwrap();
+        let args = self.build_config["args"].as_str().unwrap().to_string();
+        let hook_args = self.build_config["hook_args"].as_str().unwrap().to_string();
         // before hook
-        let bf_p = vec![args, hook_args];
+        let bf_p = vec![args, hook_args.clone()];
         self.execute_hook(HookSupport::BeforeGenAb, &bf_p);
         // build list
         let o = self.ab_config["asset_paths"].as_hash().unwrap();
@@ -36,13 +31,13 @@ impl BaseCmd for BuildAb {
             let c1 = format!("{}={}|", i.0, i.1);
             ex_mcd += c1.as_str();
         }
-        let suc = self.gen_unity_asset(&self.build_config, self.platform.as_str(), BuildType::Ab, format!("{} -abMap:{}", hook_args, ex_mcd).as_str());
+        let suc = self.gen_bin(&self.build_config, self.platform.as_str(), BuildType::Ab, format!("{} -abMap:{}", hook_args, ex_mcd).as_str());
         if !suc {
             exit(2);
         }
         // after hook
         let base = &self.build_config;
-        let af_p = vec![self.platform.as_str(), "", base["unity_proj"].as_str().unwrap()];
+        let af_p = vec![self.platform.clone(), "".to_string(), base["unity_proj"].as_str().unwrap().to_string()];
         self.execute_hook(HookSupport::AfterGenAb, &af_p);
     }
 }
@@ -57,10 +52,10 @@ impl BuildAb {
     }
 }
 
-pub fn handle(subm: &ArgMatches) {
-    let target = subm.value_of("platform");
-    let ab_config = subm.value_of("ab_config").unwrap();
-    let env = subm.value_of("env").unwrap();
+pub fn handle(sub: &ArgMatches) {
+    let target = sub.value_of("platform");
+    let ab_config = sub.value_of("ab_config").unwrap();
+    let env = sub.value_of("env").unwrap();
     let cmd = &BuildAb::new(target.unwrap().to_string(), env, ab_config);
     cmd.run();
 }

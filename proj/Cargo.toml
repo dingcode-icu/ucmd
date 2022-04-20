@@ -7,4 +7,4 @@ edition = "2018"
 
 [dependencies]
 serde_json = "1.0.59"
-rcmd-core = { git = "https://gitee.com/heyzf/rcmd-core.git", commit="ec802b669d8cf5169a821fc6827c9a74f7b6464f"}
+rcmd-core = { git = "https://gitee.com/heyzf/rcmd-core.git", branch="master"}

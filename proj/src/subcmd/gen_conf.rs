@@ -1,4 +1,3 @@
-use std::fmt::Display;
 use crate::subcmd::basecmd::BaseCmd;
 use std::io::Write;
 use rcmd_core::ArgMatches;

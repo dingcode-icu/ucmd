@@ -1,10 +1,10 @@
 use std::io::Read;
 use std::path::Path;
 use std::env;
-use std::collections::HashMap;
 use std::fmt;
 use std::fmt::{Formatter, Display};
 use std::fs;
+use rcmd_core::Log::warn;
 use rcmd_core::clap::YamlLoader;
 use rcmd_core::Ex::yaml_rust::Yaml;
 use rcmd_core::Log::{debug, error, info};
@@ -20,7 +20,7 @@ pub enum HookSupport {
     AfterBinBuild,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub enum BuildType {
     Android,
     Ios,
@@ -43,6 +43,159 @@ impl fmt::Display for HookSupport {
     }
 }
 
+#[derive(Debug, PartialEq)]
+enum PlayerType {
+   UnKnown,
+   Unity,
+   CocosCreatorv2 
+}
+
+impl From<PlayerType> for String{
+    fn from(p: PlayerType) -> Self {
+        match p {
+            PlayerType::Unity => "unity".into(),
+            PlayerType::CocosCreatorv2 => "cocoscreator_v2".into(),
+            _=>"unknown".into(),
+        }
+    }
+}
+
+impl From<String> for PlayerType {
+    fn from(s: String) -> Self {
+        match s {
+            s if s == "unity" => PlayerType::Unity,
+            s if s == "cocoscreator_v2" => PlayerType::CocosCreatorv2,
+            _ => PlayerType::UnKnown
+        }
+    }
+}
+
+
+
+trait BinCmd {
+    fn build_ab(&self) -> Vec<String>;
+    fn build_player(&self) -> Vec<String>;
+}
+
+struct CocosCreatorBinV2<'a>{
+    config: &'a Yaml, 
+    plat: &'a str, 
+    build_type: BuildType, 
+    ex_cmd: &'a str, 
+}
+impl<'a> CocosCreatorBinV2<'a> {
+    fn new(config: &'a Yaml, plat: &'a str, build_type: BuildType, ex_cmd: &'a str) ->Self{
+        CocosCreatorBinV2{
+            config,
+            plat,
+            build_type,
+            ex_cmd,
+        }
+    }
+}
+
+struct UnityBin<'a> {
+    config: &'a Yaml, 
+    plat: &'a str, 
+    build_type: BuildType, 
+    ex_cmd: &'a str
+}
+impl<'a> UnityBin<'a> {
+    fn new(config: &'a Yaml, plat: &'a str, build_type: BuildType, ex_cmd: &'a str) ->Self{
+        UnityBin{
+            config,
+            plat,
+            build_type,
+            ex_cmd,
+        }
+    }
+}
+
+
+impl UnityBin<'_>{
+    pub fn base_cmd(&self) ->Vec<String> {
+        let config = self.config;
+        let args_base = config["args"].as_str().unwrap();
+        let logfile = config["log_output_path"].as_str().unwrap().to_string() + util::get_strfmt_timestr("%Y%m%T%d").as_str() + ".log";
+        let unity_proj = config["asset_proj"].as_str().unwrap();
+        let method = config[self.build_type.to_string().as_str()]["method"].as_str().unwrap();
+        let args_str = format!("{args_base} \
+        -executeMethod {method} \
+        -projectPath {unity_proj} \
+        -logfile {logfile} \
+        -targetPlatform:{plat} \
+        {ex_cmd}",
+
+                                args_base = args_base,
+                                method = method,
+                                unity_proj = unity_proj,
+                                logfile = logfile,
+                                plat = self.plat,
+                                ex_cmd = self.ex_cmd
+        );
+        let args:Vec<String> = args_str.split(" ").map(|v|v.to_string()).collect();
+        info!("Gen the unity asset...");
+        // info!("Full unity command is {}", &args.join(" "));
+        args
+    }
+}
+
+impl CocosCreatorBinV2<'_> {
+    pub fn base_cmd(&self) ->Vec<String> {
+        let config = self.config;
+        let args_base = config["args"].as_str().unwrap();
+        let logfile = config["log_output_path"].as_str().unwrap().to_string() + util::get_strfmt_timestr("%Y%m%T%d").as_str() + ".log";
+        let unity_proj = config["asset_proj"].as_str().unwrap();
+        let method = config[self.build_type.to_string().as_str()]["method"].as_str().unwrap();
+        let args_str = &format!("{args_base} \
+        -executeMethod {method} \
+        -projectPath {unity_proj} \
+        -logfile {logfile} \
+        -targetPlatform:{plat} \
+        {ex_cmd}",
+
+                                args_base = args_base,
+                                method = method,
+                                unity_proj = unity_proj,
+                                logfile = logfile,
+                                plat = self.plat,
+                                ex_cmd = self.ex_cmd
+        );
+        let args:Vec<String> = args_str.split(" ").map(|v|v.to_string()).collect();
+        info!("Gen the unity asset...");
+        // info!("Full unity command is {}", &args.join(" "));
+        args
+    }
+}
+
+
+
+impl BinCmd for UnityBin<'_> {
+    fn build_ab(&self) -> Vec<String> {
+        self.base_cmd()
+    }
+
+    fn build_player(&self) ->  Vec<String> {
+        self.base_cmd()
+    }
+}
+
+
+impl BinCmd for CocosCreatorBinV2<'_>{
+    fn build_ab(&self) -> Vec<String> {
+        self.base_cmd()
+    }
+
+    fn build_player(&self) ->  Vec<String> {
+        self.base_cmd()
+    }
+}
+
+
+///查看打包工具的类型
+fn chk_bintype(bin: &str){
+
+}
 
 pub(crate) trait BaseCmd {
     ///检查env.yaml参数
@@ -71,7 +224,7 @@ pub(crate) trait BaseCmd {
         }
     }
 
-    ///加载环境配置，标准格式可通过gen_config生成
+    ///加载yaml配置
     fn parse_yaml(conf: &str) -> Yaml {
         let mut file = std::fs::File::open(conf).unwrap();
         let mut contents = String::new();
@@ -82,6 +235,7 @@ pub(crate) trait BaseCmd {
         return doc.to_owned();
     }
 
+    ///加载json配置
     fn parse_json(conf: &str) -> serde_json::Value{
         let mut file = std::fs::File::open(conf).unwrap();
         let mut contents = String::new();
@@ -91,7 +245,7 @@ pub(crate) trait BaseCmd {
     }
 
     ///执行hook,hook类似git的hook机制，在构建关键节点执行本地脚本
-    fn execute_hook(&self, hook: HookSupport, args: &Vec<&str>) {
+    fn execute_hook(&self, hook: HookSupport, args: &Vec<String>) {
         let exe = env::current_exe().unwrap();
         let pwd = exe.parent().unwrap();
         let h_name = format!("{:?}", hook);
@@ -113,38 +267,28 @@ pub(crate) trait BaseCmd {
         debug!("{}", format!("No hook {}", &h_path.to_str().unwrap()));
     }
 
-    ///执行unity cmd
-    fn gen_unity_asset(&self, config: &Yaml, plat: &str, build_type: BuildType, ex_cmd: &str) -> bool {
-        let base = config;
-        let cfg = &base[plat];
-        let args_base = base["args"].as_str().unwrap();
-        let cmd = base["unity_bin"].as_str().unwrap();
-        let logfile = base["log_output_path"].as_str().unwrap().to_string() + util::get_strfmt_timestr("%Y%m%T%d").as_str() + ".log";
-        let unity_proj = base["unity_proj"].as_str().unwrap();
-        let method = base[build_type.to_string().as_str()]["method"].as_str().unwrap();
-        let args_str = &format!("{args_base} \
-        -executeMethod {method} \
-        -projectPath {unity_proj} \
-        -logfile {logfile} \
-        -targetPlatform:{plat} \
-        {ex_cmd}",
+    ///执行bin cmd
+    fn gen_bin(&self, config: &Yaml, plat: &str, build_type: BuildType, ex_cmd: &str) -> bool {
+        let cmd = config["bin"].as_str().unwrap();
+        let cmd_type = config["bin_type"].as_str().unwrap(); 
 
-                                args_base = args_base,
-                                method = method,
-                                unity_proj = unity_proj,
-                                logfile = logfile,
-                                plat = plat,
-                                ex_cmd = ex_cmd
-        );
-        let args = args_str.split(" ").collect::<Vec<&str>>();
-        info!("Gen the unity asset...");
-        info!("Full unity command is {} {}",cmd, &args.join(" "));
-        info!("It will cost a long time \n\
-                  Enter the following command to check the process...\n\
-                  +++++++++++++++++++++++++++++++++\n\
-                  tail -f {logfile}\n\
-                  +++++++++++++++++++++++++++++++++\n\
-                  ", logfile = logfile);
+        let mut args= vec![];
+        let p_type:PlayerType = cmd_type.to_string().into();
+        while p_type != PlayerType::UnKnown {
+            if p_type == PlayerType::Unity {
+                args = UnityBin::new(config, plat, build_type, ex_cmd).base_cmd();
+            }
+            else if p_type == PlayerType::CocosCreatorv2 {
+                args = CocosCreatorBinV2::new(config, plat, build_type, ex_cmd).base_cmd();
+            }
+            else {
+                warn!("[basecmd] not found the player type {:?}", cmd_type);
+                std::process::exit(0)    
+            }
+        }
+
+
+
         let (suc, ret) = util::shcmd::run_sh(cmd, &args);
         if suc {
             info!("Gen unity asset success!");
@@ -159,5 +303,6 @@ pub(crate) trait BaseCmd {
         return false;
     }
 
+    ///trait of run 子结构必须自行实现
     fn run(&self);
 }
