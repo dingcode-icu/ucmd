@@ -6,14 +6,5 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-clap = { version = "3.0.0-beta.4", features = ["yaml"]  }
-log = "0.4"
-
-#yaml
-yaml-rust = "0.4"
-#time
-chrono = "0.4"
-lazy_static = "1.4.0"
 serde_json = "1.0.59"
-
-rcmd-core = { path = "./rcmd-core", version = "0.1.0"}
+rcmd-core = { git = "https://gitee.com/heyzf/rcmd-core.git", commit="ec802b669d8cf5169a821fc6827c9a74f7b6464f"}

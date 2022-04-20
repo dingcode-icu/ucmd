@@ -1,7 +1,8 @@
-use log::{info, error};
-use clap::ArgMatches;
+use std::fmt::Display;
 use crate::subcmd::basecmd::BaseCmd;
 use std::io::Write;
+use rcmd_core::ArgMatches;
+use rcmd_core::Log::{error, info};
 
 struct GenConf {
     conf_type: String,
@@ -43,13 +44,35 @@ impl GenConf {
     }
 }
 
+#[derive(Debug)]
+enum ConfType {
+    Unity,
+    Unity_ab,
+    CocosCreator,
+    CocosCreator_ab,
+}
+
+impl From<ConfType> for String {
+    fn from(c: ConfType) -> Self {
+        match c{
+            ConfType::Unity => {"unity".into()}
+            ConfType::Unity_ab => {"unity-ab".into()}
+            ConfType::CocosCreator => {"cocos creator".into()}
+            ConfType::CocosCreator_ab => {"cocos creator-ab".into()}
+        }
+    }
+}
+
+
 pub fn handle(subm: &ArgMatches) {
-    let conf_support: Vec<&str> = vec!["env", "build-ab"];
     let target = subm.value_of("type");
     let o = subm.value_of("output").unwrap();
+
     match target {
         None => {}
         Some(v) => {
+            //chk if support
+            // target.unwrap()
             let cmd = &GenConf::new(String::from(v), String::from(o));
             cmd.run();
         }

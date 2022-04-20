@@ -5,7 +5,7 @@ about: hammers in 50RMB
 subcommands:
   - build-ab:
       about: build the assetbundle
-      version: "1.0"
+      version: "1.0.0"
       author: dwb <dwb@dwb.ren>
       args:
         - platform:

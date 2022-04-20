@@ -1,15 +1,13 @@
-extern crate yaml_rust;
-
-use yaml_rust::{YamlLoader};
 use std::io::Read;
-use self::yaml_rust::Yaml;
 use std::path::Path;
 use std::env;
-use log::{debug, warn, info, error};
 use std::collections::HashMap;
 use std::fmt;
 use std::fmt::{Formatter, Display};
 use std::fs;
+use rcmd_core::clap::YamlLoader;
+use rcmd_core::Ex::yaml_rust::Yaml;
+use rcmd_core::Log::{debug, error, info};
 use rcmd_core::util;
 
 #[derive(Debug)]
@@ -18,8 +16,8 @@ pub enum HookSupport {
     BeforeGenAb,
     AfterGenAb,
     ///gen unity
-    BeforeGenUnity,
-    AfterGenUnity,
+    BeforeBinBuild,
+    AfterBinBuild,
 }
 
 #[derive(Debug)]
