@@ -1,5 +1,5 @@
 use crate::subcmd::basecmd::{BaseCmd, HookSupport, BuildType};
-use rcmd_core::{ArgMatches};
+use rcmd_core::{ArgMatches, Log::debug};
 use std::{process::exit};
 use rcmd_core::Ex::yaml_rust::Yaml;
 
@@ -8,6 +8,8 @@ struct BuildPlayer {
     build_config: Yaml,
     ///目标平台
     platform: String,
+    ///
+    root_path: String
 }
 
 impl BaseCmd for BuildPlayer {
@@ -38,9 +40,12 @@ impl BaseCmd for BuildPlayer {
 
 impl BuildPlayer {
     fn new(config: &str, platform: String) -> Self {
+        let p = Path::new(config).parent().unwrap();
+        debug!("build_player new {}", p.to_str().unwrap());
         BuildPlayer {
             build_config: BuildPlayer::parse_yaml(config),
             platform,
+            root_path:p.to_str().unwrap().to_string()
         }
     }
 }
@@ -53,6 +58,15 @@ pub fn handle(subm: &ArgMatches) {
         Some(_) => {}
     }
     let conf = subm.value_of("config").unwrap();     //这里其实也不用match了 clap的require参数不符合clap就会过滤掉
+    let cmd = &BuildPlayer::new(conf, target.unwrap().to_string());
+    cmd.run();
+}
+
+#[test]
+
+fn test_buildplayer() {
+    use std::env;
+    let conf = env::current_exe().unwrap()
     let cmd = &BuildPlayer::new(conf, target.unwrap().to_string());
     cmd.run();
 }

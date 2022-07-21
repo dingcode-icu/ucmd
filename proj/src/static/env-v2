@@ -1,0 +1,59 @@
+#===========================
+#==========必传参数==========
+"""
+unity可执行文件 
+ex:/Unity.app/Contents/MacOS/Unity
+"""
+bin: /Applications/Unity/Hub/Editor/2019.4.26f1c1/Unity.app/Contents/MacOS/Unity                         
+
+"""
+构建的游戏类型
+enum{
+    unity、
+    cocos creator v3
+}
+"""
+bin_type: unity 
+
+"""
+discard 工程路径
+配置放到根路径
+"""
+
+"""
+discard 日志路径
+直接在工程根路径
+"""
+log_output_path: /Users/mac/Desktop       #unity日志输路径
+
+#通用参数(
+#  -isRelease:true  编译选项(ex:true, false)
+#  -buildSymbols:xx  C#宏定义
+#  )
+
+
+args: -quit -batchmode -isRelease:true
+#==========必传参数==========
+#===========================
+
+#===========================
+#============可选============
+
+#android(需要确保ucmd-buildplayer在Unity内安装)
+android:
+  path:  #原生工程路径
+  method: Ucmd.BuildPlayer.PerformBuildAndroid.ExportProjAsset
+
+#ios(需要确保ucmd-buildplayer在Unity内安装)
+ios:
+  path:  #原生工程路径
+  method: Ucmd.BuildPlayer.PerformBuildIOS.CommandLineBuild
+
+ab:
+  is_only_prefab: false   #ab包是否只打包prefab
+  method: Ucmd.BuildPlayer.PerformBuildAb.Build
+
+#hook，透传到hook脚本内的参数
+hook_args: -env:test #环境定义(ex:online, dev, test)
+#============可选============
+#===========================
