@@ -9,22 +9,22 @@ struct GenConf {
 }
 
 
-const BUILDERS_TEMP: &str = include_str!("../static/env");
-const ABMAP_TEMP: &str = include_str!("../static/build-ab");
+const BUILDERS_TEMP: &str = include_str!("../static/.ucmd"); 
+const ABMAP_TEMP: &str = include_str!("../static/.ucmd_ab");
 
 impl BaseCmd for GenConf {
     fn run(&self) {
         let tar = self.conf_type.as_str();
         match tar {
-            "build-player" | "env" => {
+            "build-player" | ".ucmd" => {
                 let mut f = std::fs::File::create(&self.out_file).expect(format!("create config file {} failed!", &self.out_file).as_str());
                 f.write_all(BUILDERS_TEMP.as_bytes()).expect(format!("write content to {} failed!", self.out_file).as_str());
                 info!("Gen suc!");
             }
             "build-ab" => {
-                const ab_f: &str = "build_ab.yaml";
-                let mut f = std::fs::File::create(ab_f).expect(format!("create config file {} failed!", ab_f).as_str());
-                f.write_all(ABMAP_TEMP.as_bytes()).expect(format!("write content to {} failed!", ab_f).as_str());
+                const CONF_F: &str = "build_ab.yaml";
+                let mut f = std::fs::File::create(CONF_F).expect(format!("create config file {} failed!", CONF_F).as_str());
+                f.write_all(ABMAP_TEMP.as_bytes()).expect(format!("write content to {} failed!", CONF_F).as_str());
                 info!("Gen suc!");
             }
             _ => {

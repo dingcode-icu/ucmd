@@ -1,31 +1,32 @@
-use crate::subcmd::basecmd::{BaseCmd, HookSupport, BuildType};
-use rcmd_core::{ArgMatches, Log::debug};
-use std::{process::exit};
-use rcmd_core::Ex::yaml_rust::Yaml;
+use crate::subcmd::basecmd::{BaseCmd, HookSupport};
+use rcmd_core::{ArgMatches};
+use std::{process::exit, path::Path};
+
+use super::BuildType;
 
 struct BuildPlayer {
-    ///env配置
-    build_config: Yaml,
     ///目标平台
     platform: String,
-    ///
-    root_path: String
+    ///工程路径
+    proj_path: String
 }
 
 impl BaseCmd for BuildPlayer {
     fn run(&self) {
-        let args =  self.build_config["args"].as_str().unwrap().to_string() ;
-        let hook_args = self.build_config["hook_args"].as_str().unwrap().to_string();
+        let conf_file = Path::new(&self.proj_path).join(".ucmd"); 
+        let build_config = BuildPlayer::parse_yaml(conf_file.to_str().unwrap());
+        let args =  build_config["args"].as_str().unwrap().to_string() ;
+        let hook_args = build_config["hook_args"].as_str().unwrap().to_string();
         // before hook
         let bf_p = vec![args.to_string(), hook_args.to_string()];
         self.execute_hook(HookSupport::BeforeBinBuild, &bf_p);
         // bin execute
-        let suc = self.gen_bin(&self.build_config, &self.platform,  if self.platform == "ios" { BuildType::Ios } else {BuildType::Android}, hook_args.as_str());
+        let suc = self.gen_target(self.proj_path.as_str(), &build_config, &self.platform,  if self.platform == "ios" { BuildType::Ios } else {BuildType::Android}, hook_args.as_str());
         if !suc {
             exit(2);
         }
         // after hook
-        let base = &self.build_config;
+        let base = &build_config;
         let plat = self.platform.to_string();
         let cfg = &base[plat.as_str()];
         let is = cfg["path"].is_badvalue() || cfg["path"].is_null();
@@ -40,12 +41,11 @@ impl BaseCmd for BuildPlayer {
 
 impl BuildPlayer {
     fn new(config: &str, platform: String) -> Self {
-        let p = Path::new(config).parent().unwrap();
-        debug!("build_player new {}", p.to_str().unwrap());
+        let p = Path::new(config).parent().unwrap().to_str().unwrap();
+        println!("build_player new {}", p);
         BuildPlayer {
-            build_config: BuildPlayer::parse_yaml(config),
             platform,
-            root_path:p.to_str().unwrap().to_string()
+            proj_path:p.to_string()
         }
     }
 }
@@ -63,10 +63,13 @@ pub fn handle(subm: &ArgMatches) {
 }
 
 #[test]
-
 fn test_buildplayer() {
     use std::env;
-    let conf = env::current_exe().unwrap()
-    let cmd = &BuildPlayer::new(conf, target.unwrap().to_string());
+    use std::os;
+    let conf = std::env::current_dir().unwrap()
+                    .parent().unwrap()
+                    .join("test").join("config").join(".ucmd");
+    println!("conf = {}", conf.to_str().unwrap());
+    let cmd = &BuildPlayer::new(conf.to_str().unwrap(), "ios".to_string());
     cmd.run();
 }

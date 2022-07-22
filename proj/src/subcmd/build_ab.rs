@@ -1,8 +1,10 @@
-use crate::subcmd::basecmd::{BaseCmd, HookSupport, BuildType};
+use crate::subcmd::basecmd::{BaseCmd, HookSupport};
 use std::process::exit;
 use rcmd_core::{ArgMatches};
 use std::collections::HashMap;
 use rcmd_core::Ex::yaml_rust::Yaml;
+
+use super::BuildType;
 
 
 ///构建asset bundle命令
@@ -31,7 +33,8 @@ impl BaseCmd for BuildAb {
             let c1 = format!("{}={}|", i.0, i.1);
             ex_mcd += c1.as_str();
         }
-        let suc = self.gen_bin(&self.build_config, self.platform.as_str(), BuildType::Ab, format!("{} -abMap:{}", hook_args, ex_mcd).as_str());
+        // let suc = self.gen_target(&self.build_config, self.platform.as_str(), BuildType::Ab, format!("{} -abMap:{}", hook_args, ex_mcd).as_str());
+        let suc = false;
         if !suc {
             exit(2);
         }

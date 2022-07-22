@@ -2,6 +2,6 @@
 #python 
 *.pyc 
 
-
+.vscode/
 .idea/
 target/

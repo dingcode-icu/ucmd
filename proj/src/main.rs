@@ -46,9 +46,5 @@ fn test_util() {
     let _ = util::filesys::copy_dir_all(Path::new(fp), Path::new(tp));
     //shcmd
     let cmd = "ls";
-    let _ = util::shcmd::run_sh(&cmd.to_string(), &vec!["-l", "-a"]);
-}
-
-fn test_buildplayer() {
-    subcmd::build_player::handle(subm);
+    // let _ = util::shcmd::run_sh(&cmd.to_string(), &vec!["-l".to_string(), "-a".to_string()]);
 }
