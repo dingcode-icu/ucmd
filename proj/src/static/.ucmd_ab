@@ -1,6 +1,0 @@
-#构建配置，按文件夹截取，bundle名字对应配置的文件夹内文件,ab配置也会更换成对应
-asset_paths: {
-  bundle_a: Assets/test,
-  bundle_b: Assets/b
-}
-

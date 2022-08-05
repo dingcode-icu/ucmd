@@ -17,7 +17,7 @@ fn main() {
 
     match app_m.subcommand() {
         Some((external, sub_m)) => match external {
-            "gen-conf" => {
+            "init" => {
                 subcmd::gen_conf::handle(sub_m);
             }
             "build-player" => {

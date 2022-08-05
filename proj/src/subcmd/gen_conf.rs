@@ -10,7 +10,7 @@ struct GenConf {
 
 
 const BUILDERS_TEMP: &str = include_str!("../static/.ucmd"); 
-const ABMAP_TEMP: &str = include_str!("../static/.ucmd_ab");
+const ABMAP_TEMP: &str = include_str!("../static/.ucmd-ab");
 
 impl BaseCmd for GenConf {
     fn run(&self) {
@@ -22,7 +22,7 @@ impl BaseCmd for GenConf {
                 info!("Gen suc!");
             }
             "build-ab" => {
-                const CONF_F: &str = "build_ab.yaml";
+                const CONF_F: &str = ".ucmd-ab";
                 let mut f = std::fs::File::create(CONF_F).expect(format!("create config file {} failed!", CONF_F).as_str());
                 f.write_all(ABMAP_TEMP.as_bytes()).expect(format!("write content to {} failed!", CONF_F).as_str());
                 info!("Gen suc!");

@@ -4,9 +4,6 @@ use rcmd_core::{ArgMatches};
 use std::collections::HashMap;
 use rcmd_core::Ex::yaml_rust::Yaml;
 
-use super::BuildType;
-
-
 ///构建asset bundle命令
 struct BuildAb {
     ///env配置

@@ -1,7 +1,7 @@
 name: ucmd
-version: "1.0"
+version: "1.1"
 author: dwb <dwb@dwb.ren>
-about: hammers in 50RMB
+about: Helpful for game project build&&compile
 subcommands:
   - build-ab:
       about: build the assetbundle
@@ -13,10 +13,10 @@ subcommands:
             about: the ab assetbundle build for
         - isonly-prefab:
             short: p
-            about: if only include the prefab file inde
+            about: if only include the prefab file inside
         - env:
             required: true
-            about: \*env.yaml*\ file path to confirm the publish env
+            about: \*.ucmd*\ file path to confirm the publish env
         - ab_config:
             required: true
             about: the ab build path relative to unity proj's root-path
@@ -30,11 +30,11 @@ subcommands:
             about: the platform env run in
         - config:
             required: true
-            about: \*env.yaml*\ file path to confirm the publish env
+            about: \*.ucmd*\ file path to confirm the publish env
         - isrelease:
             short: r
             about: if the build type is release
-  - gen-conf:
+  - init:
       about: gen config file for ucmd use
       version: "1.0"
       author: dwb <dwb@dwb.ren>
@@ -45,4 +45,4 @@ subcommands:
         - output:
             short: o
             about: file path to output the config.
-            default_value: env.yaml
+            default_value: .ucmd-ab

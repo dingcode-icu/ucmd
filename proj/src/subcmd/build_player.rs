@@ -16,12 +16,11 @@ impl BaseCmd for BuildPlayer {
         let conf_file = Path::new(&self.proj_path).join(".ucmd"); 
         let build_config = BuildPlayer::parse_yaml(conf_file.to_str().unwrap());
         let args =  build_config["args"].as_str().unwrap().to_string() ;
-        let hook_args = build_config["hook_args"].as_str().unwrap().to_string();
         // before hook
-        let bf_p = vec![args.to_string(), hook_args.to_string()];
+        let bf_p = vec![args];
         self.execute_hook(HookSupport::BeforeBinBuild, &bf_p);
         // bin execute
-        let suc = self.gen_target(self.proj_path.as_str(), &build_config, &self.platform,  if self.platform == "ios" { BuildType::Ios } else {BuildType::Android}, hook_args.as_str());
+        let suc = self.gen_target(self.proj_path.as_str(), &build_config, &self.platform,  if self.platform == "ios" { BuildType::Ios } else {BuildType::Android}, "");
         if !suc {
             exit(2);
         }
@@ -31,9 +30,9 @@ impl BaseCmd for BuildPlayer {
         let cfg = &base[plat.as_str()];
         let is = cfg["path"].is_badvalue() || cfg["path"].is_null();
         let af_p = if is == false {
-            vec![plat, cfg["path"].as_str().unwrap().to_string(), base["unity_proj"].as_str().unwrap().to_string()]
+            vec![plat, cfg["path"].as_str().unwrap().to_string(), ]
         } else {
-            vec![plat, "".to_string(), base["unity_proj"].as_str().unwrap().to_string()]
+            vec![plat, "".to_string()]
         };
         self.execute_hook(HookSupport::AfterBinBuild, &af_p);
     }
