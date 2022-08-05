@@ -113,7 +113,7 @@ pub(crate) trait BaseCmd {
         let exe = env::current_exe().unwrap();
         let pwd = exe.parent().unwrap();
         let h_name = format!("{:?}", hook);
-        let h_path = Path::join(pwd, "hook").join(&h_name);
+        let h_path = Path::join(pwd, ".ucmd_hook").join(&h_name);
         debug!("{}", format!("Check execute hook:{}", &h_path.to_str().unwrap()));
         let mf = fs::metadata(&h_path);
         if mf.is_ok() {
@@ -134,11 +134,11 @@ pub(crate) trait BaseCmd {
     ///执行bin cmd
     fn gen_target(&self, proj_path:&str, config: &Yaml, plat: &str, build_type: BuildType, ex_cmd: &str) -> bool {
         let cmd = config["bin"].as_str().unwrap();
-        let cmd_type = config["bin_type"].as_str().unwrap(); 
+        let cmd_type = config["bin_type"].as_str().or(Some("unity")).unwrap(); 
 
         let mut args= vec![];
         let p_type:PlayerType = cmd_type.to_string().into();
-        if p_type != PlayerType::UnKnown {
+        if p_type != PlayerType::UnKnown { 
             if p_type == PlayerType::Unity {
                 args = UnityProj::new(proj_path, config, plat, build_type, ex_cmd).base_cmd();
             }

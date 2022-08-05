@@ -2,8 +2,8 @@ CARGO_BIN = cargo
 BIN_OUTPUT = ucmd
 
 PROJ_DIR = "./proj"
-PROJ_BUILD_DIR  = "./proj/target/release/"${BIN_OUTPUT}
-PORJ_WIN_DIR= "./proj/target/x86_64-pc-windows-gnu/release/${BIN_OUTPUT}.exe"
+PROJ_BUILD_DIR = "./proj/target/release/"${BIN_OUTPUT}
+PORJ_WIN_DIR= "./proj/target/stable-x86_64-pc-windows-msvc/release/${BIN_OUTPUT}.exe"
 
 # ===make===
 ${BIN_OUTPUT}:
@@ -15,5 +15,5 @@ clean:
 	rm -rf ${BUILD_DIR}
 
 windows:
-	cd ${PROJ_DIR} && ${CARGO_BIN} build  --release  --target x86_64-pc-windows-gnu
+	cd ${PROJ_DIR} && ${CARGO_BIN} build  --release  --target stable-x86_64-pc-windows-msvc
 	upx ${PORJ_WIN_DIR}

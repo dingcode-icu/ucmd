@@ -1,5 +1,5 @@
 use crate::subcmd::basecmd::{BaseCmd, HookSupport};
-use rcmd_core::{ArgMatches};
+use rcmd_core::{ArgMatches, Log::info};
 use std::{process::exit, path::Path};
 
 use super::BuildType;
@@ -13,6 +13,7 @@ struct BuildPlayer {
 
 impl BaseCmd for BuildPlayer {
     fn run(&self) {
+        info!("build project in ->\n{}", self.proj_path);
         let conf_file = Path::new(&self.proj_path).join(".ucmd"); 
         let build_config = BuildPlayer::parse_yaml(conf_file.to_str().unwrap());
         let args =  build_config["args"].as_str().unwrap().to_string() ;
@@ -39,12 +40,10 @@ impl BaseCmd for BuildPlayer {
 }
 
 impl BuildPlayer {
-    fn new(config: &str, platform: String) -> Self {
-        let p = Path::new(config).parent().unwrap().to_str().unwrap();
-        println!("build_player new {}", p);
+    fn new(path: &str, platform: String) -> Self {
         BuildPlayer {
             platform,
-            proj_path:p.to_string()
+            proj_path:path.to_string()
         }
     }
 }
@@ -56,19 +55,16 @@ pub fn handle(subm: &ArgMatches) {
         None => {}
         Some(_) => {}
     }
-    let conf = subm.value_of("config").unwrap();     //这里其实也不用match了 clap的require参数不符合clap就会过滤掉
-    let cmd = &BuildPlayer::new(conf, target.unwrap().to_string());
+    let proj_path = subm.value_of("path").unwrap();     //这里其实也不用match了 clap的require参数不符合clap就会过滤掉
+    let cmd = &BuildPlayer::new(proj_path, target.unwrap().to_string());
     cmd.run();
 }
 
 #[test]
 fn test_buildplayer() {
-    use std::env;
-    use std::os;
-    let conf = std::env::current_dir().unwrap()
+    let proj_path = std::env::current_dir().unwrap()
                     .parent().unwrap()
-                    .join("test").join("config").join(".ucmd");
-    println!("conf = {}", conf.to_str().unwrap());
-    let cmd = &BuildPlayer::new(conf.to_str().unwrap(), "ios".to_string());
+                    .join("test");
+    let cmd = &BuildPlayer::new(proj_path.to_str().unwrap(), "ios".to_string());
     cmd.run();
 }

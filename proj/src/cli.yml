@@ -28,21 +28,14 @@ subcommands:
         - platform:
             required: true
             about: the platform env run in
-        - config:
+        - path:
             required: true
-            about: \*.ucmd*\ file path to confirm the publish env
-        - isrelease:
-            short: r
-            about: if the build type is release
+            about: the project's root path with \*.ucmd*\ config file
   - init:
       about: gen config file for ucmd use
       version: "1.0"
       author: dwb <dwb@dwb.ren>
       args:
-        - type:
+        - path:
             required: true
-            about: supported config type env|NO MORE YET:3
-        - output:
-            short: o
-            about: file path to output the config.
-            default_value: .ucmd-ab
+            about: the proj's root path

@@ -1,5 +1,3 @@
-use std::path::Path;
-
 use rcmd_core::{Ex::yaml_rust::Yaml, util, Log::info};
 
 use crate::subcmd::BuildType;
@@ -52,25 +50,22 @@ impl UnityProj<'_>{
     pub fn base_cmd(&self) ->Vec<String> {
         let config = self.config;
         let args_base = config["args"].as_str().unwrap();
-        let logfile = util::get_strfmt_timestr("%Y%m%T%d").to_string() + ".log";
         let unity_proj = self.proj_path;
-        let method = config[self.build_type.to_string().as_str()]["method"].as_str().unwrap();
+        let method = config["method"].as_str().unwrap();
         let args_str = format!("{args_base} \
         -executeMethod {method} \
         -projectPath {unity_proj} \
-        -logfile {logfile} \
         -targetPlatform:{plat} \
         {ex_cmd}",
                                 args_base = args_base,
                                 method = method,
                                 unity_proj = unity_proj,
-                                logfile = logfile,
                                 plat = self.plat,
                                 ex_cmd = self.ex_cmd
         );
         let args:Vec<String> = args_str.split(" ").map(|v|v.to_string()).collect();
         info!("Gen the unity asset...");
-        // info!("Full unity command is {}", &args.join(" "));
+        info!("Full unity command is \n{}", &args.join(" "));
         args
     }
 }
@@ -81,19 +76,14 @@ impl CocosCreatorV2Proj<'_> {
         let args_base = config["args"].as_str().unwrap();
         let cocos_proj = self.proj_path;
         let method = config[self.build_type.to_string().as_str()]["method"].as_str().unwrap();
-        //log
-        let logfile = Path::new(self.proj_path).join(".log")
-                        .join(util::get_strfmt_timestr("%Y%m%T%d").to_string() + ".log");
         let args_str = &format!("{args_base} \
         -executeMethod {method} \
         -projectPath {cocos_proj} \
-        -logfile {logfile} \
         -targetPlatform:{plat} \
         {ex_cmd}",
                                 args_base = args_base,
                                 method = method,
                                 cocos_proj = cocos_proj,
-                                logfile = logfile.display().to_string(),
                                 plat = self.plat,
                                 ex_cmd = self.ex_cmd
         );

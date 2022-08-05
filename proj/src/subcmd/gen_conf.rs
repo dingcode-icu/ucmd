@@ -1,79 +1,47 @@
 use crate::subcmd::basecmd::BaseCmd;
 use std::io::Write;
+use std::path::Path;
 use rcmd_core::ArgMatches;
-use rcmd_core::Log::{error, info};
+use rcmd_core::Log::{info};
 
 struct GenConf {
-    conf_type: String,
-    out_file: String,
+    proj_path: String
 }
 
 
 const BUILDERS_TEMP: &str = include_str!("../static/.ucmd"); 
-const ABMAP_TEMP: &str = include_str!("../static/.ucmd-ab");
+
 
 impl BaseCmd for GenConf {
     fn run(&self) {
-        let tar = self.conf_type.as_str();
-        match tar {
-            "build-player" | ".ucmd" => {
-                let mut f = std::fs::File::create(&self.out_file).expect(format!("create config file {} failed!", &self.out_file).as_str());
-                f.write_all(BUILDERS_TEMP.as_bytes()).expect(format!("write content to {} failed!", self.out_file).as_str());
-                info!("Gen suc!");
-            }
-            "build-ab" => {
-                const CONF_F: &str = ".ucmd-ab";
-                let mut f = std::fs::File::create(CONF_F).expect(format!("create config file {} failed!", CONF_F).as_str());
-                f.write_all(ABMAP_TEMP.as_bytes()).expect(format!("write content to {} failed!", CONF_F).as_str());
-                info!("Gen suc!");
-            }
-            _ => {
-                error!("{}", format!("Not support conf type {} yet! Do nothing", tar));
-            }
-        }
+        let out_file = Path::new(self.proj_path.as_str()).join(".ucmd");
+        let mut f = std::fs::File::create(&out_file).expect(format!("create config file {} failed!", out_file.display()).as_str());
+        f.write_all(BUILDERS_TEMP.as_bytes()).expect(format!("write content to {} failed!", &out_file.display()).as_str());
+        info!("Gen suc!");
     }
 }
 
 impl GenConf {
-    fn new(ctype: String, outf: String) -> Self {
+    fn new(p: String) -> Self {
         GenConf {
-            conf_type: ctype.to_string(),
-            out_file: outf.to_string(),
+            proj_path: p
         }
     }
-}
-
-#[derive(Debug)]
-enum ConfType {
-    Unity,
-    Unity_ab,
-    CocosCreator,
-    CocosCreator_ab,
-}
-
-impl From<ConfType> for String {
-    fn from(c: ConfType) -> Self {
-        match c{
-            ConfType::Unity => {"unity".into()}
-            ConfType::Unity_ab => {"unity-ab".into()}
-            ConfType::CocosCreator => {"cocos creator".into()}
-            ConfType::CocosCreator_ab => {"cocos creator-ab".into()}
-        }
-    }
-}
+} 
 
 
 pub fn handle(subm: &ArgMatches) {
-    let target = subm.value_of("type");
-    let o = subm.value_of("output").unwrap();
+    let proj_path = subm.value_of("path").unwrap().to_string();
+    //todo chk proj type 
+    let cmd = &GenConf::new(proj_path);
+    cmd.run();
+}
 
-    match target {
-        None => {}
-        Some(v) => {
-            //chk if support
-            // target.unwrap()
-            let cmd = &GenConf::new(String::from(v), String::from(o));
-            cmd.run();
-        }
-    };
+#[test]
+fn test_init(){
+    use std::env;
+    let cur = env::current_dir().unwrap();
+    let test_path = Path::new(cur.to_str().unwrap()).parent().unwrap().join("test");
+    GenConf::new(test_path.display().to_string()).run();
+    
 }
