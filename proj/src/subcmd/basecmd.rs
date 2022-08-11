@@ -93,7 +93,7 @@ pub(crate) trait BaseCmd {
         if docs.len() == 0{
             panic!("Parse yml config raise error!")
         }
-        let doc = &docs[0];
+        let doc = &docs[0]; 
         return doc.to_owned();
     }
 
