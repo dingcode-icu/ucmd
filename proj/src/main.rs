@@ -1,15 +1,17 @@
 mod subcmd;
 use rcmd_core::clap::{load_yaml, App};
-use rcmd_core::Log::{debug, init_logger, LevelFilter};
+use rcmd_core::Log::{fern};
+use rcmd_core::Ex::chrono;
 
 fn main() {
     // init logger
-    let _ = init_logger(if cfg!(debug_assertions) {
-        Some(LevelFilter::Debug)
-    } else {
-        Some(LevelFilter::Info)
-    });
-    debug!("Init logger ");
+
+    init_logger();
+
+
+
+    
+    
     // The YAML file is found relative to the current file, similar to how modules are found
     let yaml = load_yaml!("cli.yml");
     let mut app = App::from(yaml);
@@ -34,4 +36,49 @@ fn main() {
             app.print_help().unwrap();
         }
     }
+}
+
+
+#[cfg(debug_assertions)]
+fn init_logger(){
+    let _ = fern::Dispatch::new()
+    .format(|out, message, record| {
+        out.finish(format_args!(
+            "{}[{}] {}",
+            chrono::Local::now().format("[%H:%M:%S]"),
+            record.level(),
+            message
+        ))     
+    })
+    .level(log::LevelFilter::Debug)
+    .chain(std::io::stdout())
+    .apply();
+}
+
+#[cfg(not(debug_assertions))]
+fn init_logger(){
+    let log_path = std::env::current_dir().unwrap();
+    let log_f = log_path.join(format!("{}.log",  chrono::Local::now().format("%Y_%m%d_%H%M")));
+    let fern_f = fern::log_file(log_f).unwrap();
+
+    let _ = fern::Dispatch::new()
+    .format(|out, message, record| {
+        out.finish(format_args!(
+            "{}:{}",
+            chrono::Local::now().format("[%H:%M:%S]"),
+            message
+        ))     
+    })
+    .level(log::LevelFilter::Info)
+    .chain(std::io::stdout())
+    .chain(fern_f)
+    .apply();
+}
+
+#[test]
+fn test_main(){
+    use rcmd_core::Log::{info, error, fern};
+
+
+    error!("test log fil e");
 }

@@ -14,11 +14,17 @@ ios:
 #UCMD EXTRA
 #======================
 #needed 'ucmd-extra' upm's plugin installed in project
-method: Ucmd.BuildPlayer.Entry.Run
-
+method: Ucmd.BuildPlayer.StaticCall.Run
 
 #extra args supported:
-# -isRelease:boolean
-# -todo 
+# -isRelease:boolean     是否是发布版本
+# -buildSymbols:string   C#宏
+# -isExportProj:boolean  是否导出工程本身
+
+#----android
+# -subTarget:string     纹理默认格式
+
+#----ios
+# -todo                 
 
 ex_args: -isRelease:true

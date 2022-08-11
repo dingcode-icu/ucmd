@@ -596,6 +596,7 @@ dependencies = [
 name = "ucmd"
 version = "0.1.0"
 dependencies = [
+ "log",
  "rcmd-core",
  "serde_json",
 ]

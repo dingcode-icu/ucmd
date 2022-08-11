@@ -21,7 +21,7 @@ impl BaseCmd for BuildAb {
         let hook_args = self.build_config["hook_args"].as_str().unwrap().to_string();
         // before hook
         let bf_p = vec![args, hook_args.clone()];
-        self.execute_hook(HookSupport::BeforeGenAb, &bf_p);
+        self.execute_hook(HookSupport::BeforeBinBuild, &bf_p);
         // build list
         let o = self.ab_config["asset_paths"].as_hash().unwrap();
         let items: HashMap<&str, &str> = o.iter().map(|t| (t.0.as_str().unwrap(), t.1.as_str().unwrap())).collect();
@@ -38,7 +38,7 @@ impl BaseCmd for BuildAb {
         // after hook
         let base = &self.build_config;
         let af_p = vec![self.platform.clone(), "".to_string(), base["unity_proj"].as_str().unwrap().to_string()];
-        self.execute_hook(HookSupport::AfterGenAb, &af_p);
+        self.execute_hook(HookSupport::AfterBinBuild, &af_p);
     }
 }
 

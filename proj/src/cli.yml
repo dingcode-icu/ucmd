@@ -29,7 +29,6 @@ subcommands:
             required: true
             about: the platform env run in
         - path:
-            required: true
             about: the project's root path with \*.ucmd*\ config file
   - init:
       about: gen config file for ucmd use
@@ -37,5 +36,4 @@ subcommands:
       author: dwb <dwb@dwb.ren>
       args:
         - path:
-            required: true
             about: the proj's root path

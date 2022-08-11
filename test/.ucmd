@@ -14,7 +14,8 @@ ios:
 #UCMD EXTRA
 #======================
 #needed 'ucmd-extra' upm's plugin installed in project
-method: Ucmd.BuildPlayer.Entry.Run
+method: Ucmd.BuildPlayer.StaticCall.Run
+
 
 #extra args supported:
 # -isRelease:boolean

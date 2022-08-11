@@ -31,9 +31,11 @@ impl GenConf {
 
 
 pub fn handle(subm: &ArgMatches) {
-    let proj_path = subm.value_of("path").unwrap().to_string();
+    let cur_dir = std::env::current_dir().unwrap();
+    let cur_path = cur_dir.to_str().unwrap().to_string();
+    let proj_path = subm.value_of("path").unwrap_or_else(||cur_path.as_str());
     //todo chk proj type 
-    let cmd = &GenConf::new(proj_path);
+    let cmd = &GenConf::new(proj_path.to_string());
     cmd.run();
 }
 

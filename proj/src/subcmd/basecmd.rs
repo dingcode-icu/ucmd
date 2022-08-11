@@ -9,18 +9,16 @@ use rcmd_core::clap::YamlLoader;
 use rcmd_core::Ex::yaml_rust::Yaml;
 use rcmd_core::Log::{debug, error, info};
 use rcmd_core::util;
-
-use crate::subcmd::players::unity::CocosCreatorV2Proj;
+use crate::subcmd::players::cocosv2::CocosCreatorV2Proj;
 use crate::subcmd::players::unity::UnityProj;
 
 use super::BuildType;
 
 #[derive(Debug)]
-pub enum HookSupport {
-    ///gen ab
-    BeforeGenAb,
-    AfterGenAb,
-    ///gen unity
+pub enum HookSupport { 
+    //game resource prepare
+    PreSources, 
+    //binary of game engine build command 
     BeforeBinBuild,
     AfterBinBuild,
 }
@@ -160,7 +158,7 @@ pub(crate) trait BaseCmd {
         if ret.len() > 0 {
             error!("{}", ret);
         } else {
-            error!("Check the error in unity output logfile! ")
+            error!("Raise error in binary build! ")
         }
         return false;
     }
