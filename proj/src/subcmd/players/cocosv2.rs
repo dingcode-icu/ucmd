@@ -43,7 +43,6 @@ impl CocosCreatorV2Proj<'_> {
         );
         let args:Vec<String> = args_str.split(" ").map(|v|v.to_string()).collect();
         info!("Gen the cocos asset...");
-        // info!("Full unity command is {}", &args.join(" "));
         args
     }
 }

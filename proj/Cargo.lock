@@ -466,7 +466,7 @@ checksum = "9c33a3c44ca05fa6f1807d8e6743f3824e8509beca625669633be0acbdf509dc"
 [[package]]
 name = "rcmd-core"
 version = "0.1.0"
-source = "git+https://gitee.com/heyzf/rcmd-core.git?branch=master#941fd2d6bb9130f5960fc1bfc8f643d587587f34"
+source = "git+https://gitee.com/heyzf/rcmd-core.git?branch=master#eaf1e3ba0ebfc286b8c8ebd91fec614012c1edad"
 dependencies = [
  "chrono",
  "clap",

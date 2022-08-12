@@ -61,7 +61,6 @@ impl UnityProj<'_>{
         let args:Vec<String> = args_str.split(" ").map(|v|v.to_string()).collect();
         info!("Gen the unity asset...");
         info!("unity output log in {}", log_f.display().to_string());
-        info!("Full unity command is \n{}", &args.join(" "));
         args
     }
 }   
