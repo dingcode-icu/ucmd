@@ -1,3 +1,6 @@
+use std::fs;
+use std::path::Path;
+
 use rcmd_core::{Ex::yaml_rust::Yaml, Log::info};
 use crate::chrono::Local;
 use crate::subcmd::BuildType;
@@ -32,15 +35,22 @@ impl UnityProj<'_>{
         let ucmdex_args = config["ex_args"].as_str().unwrap();
         let platform_arg =  format!(" -_targetPlatform:{}", &self.plat);
         //log file
-        let log_path = std::env::current_dir().unwrap();
+        let log_path = std::env::current_dir().unwrap().join(".ucmd_build");
         let log_f = log_path.join(format!("{}_unity.log",  Local::now().format("%Y_%m%d_%H%M")));
+        //output path 
+        let output_path = log_path.join(self.plat);
+        if !Path::new(log_path.as_path()).is_dir(){
+            fs::create_dir(log_path.as_path()).expect("create dir <.ucmd_build> falied!");
+        }
 
         let args_str = format!("{args_base} \
         -executeMethod {method} \
         -projectPath {unity_proj} \
         -logFile {log_file} \
+        -outputPath:{output_path} \
         {ex_cmd}",
                                 args_base = args_base,
+                                output_path = output_path.display(),
                                 method = method,
                                 log_file = log_f.display().to_string(),
                                 unity_proj = unity_proj,
@@ -53,7 +63,7 @@ impl UnityProj<'_>{
         info!("Full unity command is \n{}", &args.join(" "));
         args
     }
-}
+}   
 
 impl BinCmd for UnityProj<'_> {
     fn build_ab(&self) -> Vec<String> {
