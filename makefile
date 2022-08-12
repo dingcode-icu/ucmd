@@ -11,7 +11,6 @@ ${BIN_OUTPUT}:
 	upx ${PROJ_BUILD_DIR}
 # ===clean===
 clean:
-
 	rm -rf ${BUILD_DIR}
 
 windows:

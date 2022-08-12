@@ -1,16 +1,16 @@
 mod subcmd;
 use rcmd_core::clap::{load_yaml, App};
-use rcmd_core::Log::{fern};
-use rcmd_core::Ex::chrono;
 
 fn main() {
+    
     // init logger
     init_logger();
-    
+
     // The YAML file is found relative to the current file, similar to how modules are found
-    let yaml = load_yaml!("cli.yml");
-    let mut app = App::from(yaml);
+    let cli = load_yaml!("cli.yml");
+    let mut app = App::from(cli);
     let app_m = app.clone().get_matches();
+
 
     match app_m.subcommand() {
         Some((external, sub_m)) => match external {
@@ -36,6 +36,8 @@ fn main() {
 
 #[cfg(debug_assertions)]
 fn init_logger(){
+    use rcmd_core::{fern, chrono};
+
     let _ = fern::Dispatch::new()
     .format(|out, message, record| {
         out.finish(format_args!(
@@ -52,6 +54,7 @@ fn init_logger(){
 
 #[cfg(not(debug_assertions))]
 fn init_logger(){
+    use rcmd_core::{chrono, fern, log};
     let log_path = std::env::current_dir().unwrap();
     let log_f = log_path.join(format!("{}.log",  chrono::Local::now().format("%Y_%m%d_%H%M")));
     let fern_f = fern::log_file(log_f).unwrap();
@@ -73,7 +76,5 @@ fn init_logger(){
 #[test]
 fn test_main(){
     use rcmd_core::Log::{info, error, fern};
-
-
-    error!("test log fil e");
+    error!("test log file");
 }

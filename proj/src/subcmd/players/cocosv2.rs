@@ -1,4 +1,6 @@
-use rcmd_core::{Ex::yaml_rust::Yaml, Log::info};
+use log::info;
+use rcmd_core::yaml_rust::Yaml;
+
 use crate::subcmd::BuildType;
 use super::BinCmd;
 

@@ -4,11 +4,13 @@ use std::env;
 use std::fmt;
 use std::fmt::{Formatter};
 use std::fs;
-use rcmd_core::Log::warn;
+use log::debug;
+use log::error;
+use log::info;
+use log::warn;
 use rcmd_core::clap::YamlLoader;
-use rcmd_core::Ex::yaml_rust::Yaml;
-use rcmd_core::Log::{debug, error, info};
 use rcmd_core::util;
+use rcmd_core::yaml_rust::Yaml;
 use crate::subcmd::players::cocosv2::CocosCreatorV2Proj;
 use crate::subcmd::players::unity::UnityProj;
 
@@ -115,7 +117,7 @@ pub(crate) trait BaseCmd {
         debug!("{}", format!("Check execute hook:{}", &h_path.to_str().unwrap()));
         let mf = fs::metadata(&h_path);
         if mf.is_ok() {
-            info!("{}", format!("found the hook file {}", &h_path.to_str().unwrap()));
+            info!("{}", format!("found the hook file {}", &h_path.to_str().unwrap()));  
             let (iss, ret) = util::shcmd::run_sh(&String::from(h_path.to_str().unwrap()), args);
             if iss {
                 info!("{}", ret);

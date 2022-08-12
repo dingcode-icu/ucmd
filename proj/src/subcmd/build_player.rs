@@ -1,5 +1,7 @@
+use log::info;
+use rcmd_core::clap::ArgMatches;
+
 use crate::subcmd::basecmd::{BaseCmd, HookSupport};
-use rcmd_core::{ArgMatches, Log::info};
 use std::{process::exit, path::Path};
 
 use super::BuildType;

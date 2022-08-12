@@ -1,8 +1,8 @@
 use crate::subcmd::basecmd::BaseCmd;
 use std::io::Write;
 use std::path::Path;
-use rcmd_core::ArgMatches;
-use rcmd_core::Log::{info};
+use log::info;
+use rcmd_core::clap::{ArgMatches};
 
 struct GenConf {
     proj_path: String
