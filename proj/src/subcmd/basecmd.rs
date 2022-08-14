@@ -1,10 +1,8 @@
 use std::io::Read;
 use std::path::Path;
-use std::env;
 use std::fmt;
 use std::fmt::{Formatter};
 use std::fs;
-use log::debug;
 use log::error;
 use log::info;
 use log::warn;
@@ -109,12 +107,10 @@ pub(crate) trait BaseCmd {
     }
 
     ///执行hook,hook类似git的hook机制，在构建关键节点执行本地脚本
-    fn execute_hook(&self, hook: HookSupport, args: &Vec<String>) {
-        let exe = env::current_exe().unwrap();
-        let pwd = exe.parent().unwrap();
+    fn execute_hook(&self, proj_path: &str, hook: HookSupport, args: &Vec<String>) {
         let h_name = format!("{:?}", hook);
-        let h_path = Path::join(pwd, ".ucmd_hook").join(&h_name);
-        debug!("{}", format!("Check execute hook:{}", &h_path.to_str().unwrap()));
+        let h_path = Path::new(proj_path).join(".ucmd_hook").join(&h_name);
+        info!("{}", format!("Check execute hook:{}", &h_path.to_str().unwrap()));
         let mf = fs::metadata(&h_path);
         if mf.is_ok() {
             info!("{}", format!("found the hook file {}", &h_path.to_str().unwrap()));  
@@ -128,7 +124,7 @@ pub(crate) trait BaseCmd {
             }
             return;
         }
-        debug!("{}", format!("No hook {}", &h_path.to_str().unwrap()));
+        info!("{}", format!("No hook {}", &h_path.to_str().unwrap()));
     }
 
     ///执行bin cmd

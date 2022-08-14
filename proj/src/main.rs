@@ -75,6 +75,6 @@ fn init_logger(){
 
 #[test]
 fn test_main(){
-    use rcmd_core::Log::{info, error, fern};
+    use rcmd_core::log::{info, error};
     error!("test log file");
 }

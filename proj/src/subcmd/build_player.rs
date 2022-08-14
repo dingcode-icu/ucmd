@@ -22,23 +22,14 @@ impl BaseCmd for BuildPlayer {
         
         // before hook
         let bf_p = vec![ucmdex_args.to_string()];
-        self.execute_hook(HookSupport::BeforeBinBuild, &bf_p);
+        self.execute_hook(self.proj_path.as_str(), HookSupport::BeforeBinBuild, &bf_p);
         // bin execute
         let suc = self.gen_target(self.proj_path.as_str(), &build_config, &self.platform,  if self.platform == "ios" { BuildType::Ios } else {BuildType::Android}, "");
         if !suc {
             exit(2);
         }
         // after hook
-        let base = &build_config;
-        let plat = self.platform.to_string();
-        let cfg = &base[plat.as_str()];
-        let is = cfg["path"].is_badvalue() || cfg["path"].is_null();
-        let af_p = if is == false {
-            vec![plat, cfg["path"].as_str().unwrap().to_string(), ]
-        } else {
-            vec![plat, "".to_string()]
-        };
-        self.execute_hook(HookSupport::AfterBinBuild, &af_p);
+        self.execute_hook(self.proj_path.as_str(), HookSupport::AfterBinBuild, &bf_p);
     }
 }
 
@@ -71,5 +62,7 @@ fn test_buildplayer() {
                     .parent().unwrap()
                     .join("test");
     let cmd = &BuildPlayer::new(proj_path.to_str().unwrap(), "ios".to_string());
-    cmd.run();
+    // cmd.run();
+    
+    cmd.execute_hook(proj_path.to_str().unwrap() , HookSupport::BeforeBinBuild, &vec!["a".to_string(), "b".to_string()])
 }
