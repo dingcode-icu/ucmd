@@ -8,17 +8,17 @@ pub struct CocosCreatorV2Proj<'a>{
     proj_path:&'a str,
     config: &'a Yaml, 
     plat: &'a str, 
-    build_type: BuildType, 
+    build_path: &'a str, 
     ex_cmd: &'a str, 
 }
 
 impl<'a> CocosCreatorV2Proj<'a> {
-    pub fn new(proj_path:&'a str, config: &'a Yaml, plat: &'a str, build_type: BuildType, ex_cmd: &'a str) ->Self{
+    pub fn new(proj_path:&'a str, config: &'a Yaml, plat: &'a str, build_path: &'a str, ex_cmd: &'a str) ->Self{
         CocosCreatorV2Proj{
             proj_path,
             config,
             plat,
-            build_type,
+            build_path,
             ex_cmd,
         }
     }
@@ -29,7 +29,7 @@ impl CocosCreatorV2Proj<'_> {
         let config = self.config;
         let args_base = config["args"].as_str().unwrap();
         let cocos_proj = self.proj_path;
-        let method = config[self.build_type.to_string().as_str()]["method"].as_str().unwrap();
+        let method = "unknow";
         let args_str = &format!("{args_base} \
         -executeMethod {method} \
         -projectPath {cocos_proj} \

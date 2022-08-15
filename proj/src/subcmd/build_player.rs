@@ -4,8 +4,6 @@ use rcmd_core::clap::ArgMatches;
 use crate::subcmd::basecmd::{BaseCmd, HookSupport};
 use std::{path::Path, process::exit};
 
-use super::BuildType;
-
 struct BuildPlayer {
     ///目标平台
     platform: String,
@@ -18,7 +16,7 @@ impl BaseCmd for BuildPlayer {
         info!("build-player in ->{}", self.proj_path);
         let conf_file = Path::new(&self.proj_path).join(".ucmd");
         let build_config = BuildPlayer::parse_yaml(conf_file.to_str().unwrap());
-        let mut m_ucmdex_args;
+        let mut m_ucmdex_args: String = String::from("");
         let ucmdex_args = build_config["ex_args"].as_str().unwrap();
 
         //chk build path
@@ -29,13 +27,13 @@ impl BaseCmd for BuildPlayer {
             .join(&self.platform);
         //output path
         if !Path::new(build_path.as_path()).is_dir() {
-            fs::create_dir(build_path.as_path()).expect("create dir <.ucmd_build> falied!");
+            std::fs::create_dir(build_path.as_path()).expect("create dir <.ucmd_build> falied!");
         }
         //_outputPath
         //_targetPlatform
-        m_ucmdex_args += ucmdex_args.to_string()
-            + format!("-_outputPath:{}", build_path.display()).as_str()
-            + format!("-_targetPlatform:{}", &self.platform).as_str();
+        m_ucmdex_args += ucmdex_args;
+        m_ucmdex_args += format!(" -_outputPath:{}", build_path.display()).as_str();
+        m_ucmdex_args += format!(" -_targetPlatform:{}", &self.platform).as_str();
 
         // before hook
         let hook_params = vec![m_ucmdex_args.to_string()];
@@ -49,8 +47,8 @@ impl BaseCmd for BuildPlayer {
             self.proj_path.as_str(),
             &build_config,
             &self.platform,
-            build_path.display(),
-            m_ucmdex_args,
+            build_path.display().to_string().as_str(),
+            m_ucmdex_args.as_str(),
         );
         if !suc {
             exit(2);

@@ -12,8 +12,6 @@ use rcmd_core::yaml_rust::Yaml;
 use crate::subcmd::players::cocosv2::CocosCreatorV2Proj;
 use crate::subcmd::players::unity::UnityProj;
 
-use super::BuildType;
-
 #[derive(Debug)]
 pub enum HookSupport { 
     //game resource prepare
@@ -128,7 +126,7 @@ pub(crate) trait BaseCmd {
     }
 
     ///执行bin cmd
-    fn gen_target(&self, proj_path:&str, config: &Yaml, plat: &str, build_type: BuildType, ex_cmd: &str) -> bool {
+    fn gen_target(&self, proj_path:&str, config: &Yaml, plat: &str, build_path: &str, ex_cmd: &str) -> bool {
         let cmd = config["bin"].as_str().unwrap();
         let cmd_type = config["bin_type"].as_str().or(Some("unity")).unwrap(); 
 
@@ -136,10 +134,10 @@ pub(crate) trait BaseCmd {
         let p_type:PlayerType = cmd_type.to_string().into();
         if p_type != PlayerType::UnKnown { 
             if p_type == PlayerType::Unity {
-                args = UnityProj::new(proj_path, config, plat, build_type, ex_cmd).base_cmd();
+                args = UnityProj::new(proj_path, config, plat, build_path, ex_cmd).base_cmd();
             }
             else if p_type == PlayerType::CocosCreatorv2 {
-                args = CocosCreatorV2Proj::new(proj_path, config, plat, build_type, ex_cmd).base_cmd();
+                args = CocosCreatorV2Proj::new(proj_path, config, plat, build_path, ex_cmd).base_cmd();
             }
             else {
                 warn!("[basecmd] not found the player type {:?}", cmd_type);
