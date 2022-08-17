@@ -28,8 +28,10 @@ subcommands:
         - platform:
             required: true
             about: the platform env run in
-        - path:
-            about: the project's root path with \*.ucmd*\ config file
+        - config:
+            short: c
+            takes_value: true
+            about: the project's config file replace the default file \*.ucmd*\ 
   - init:
       about: gen config file for ucmd use
       version: "1.0"

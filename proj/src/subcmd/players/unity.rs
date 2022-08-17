@@ -1,5 +1,3 @@
-use std::fs;
-use std::path::Path;
 use log::info;
 use rcmd_core::chrono::Local;
 use rcmd_core::yaml_rust::Yaml;
@@ -44,7 +42,7 @@ impl UnityProj<'_>{
                                 method = method,
                                 unity_proj = unity_proj,
                                 log_file = log_f.display().to_string(),
-                                ex_cmd = ucmdex_args.to_string()
+                                ex_cmd = self.ex_cmd
         );
         
         let args:Vec<String> = args_str.split(" ").map(|v|v.to_string()).collect();

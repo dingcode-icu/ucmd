@@ -1,0 +1,24 @@
+#======================
+#BASE 
+#======================
+bin: D:\\Program\\UnityEditor\\2021.3.5f1c1\\Editor\\Unity.exe     
+
+args: -quit -batchmode 
+
+android:
+  path:  
+
+ios:
+  path:  
+#======================
+#UCMD EXTRA
+#======================
+#needed 'ucmd-extra' upm's plugin installed in project
+method: Ucmd.BuildPlayer.StaticCall.Run
+
+
+#extra args supported:
+# -isRelease:boolean
+# -todo 
+
+ex_args: -isRelease:true
