@@ -32,6 +32,10 @@ subcommands:
             short: c
             takes_value: true
             about: the project's config file replace the default file \*.ucmd*\ 
+        - ex_args: 
+            short: ex 
+            takes_value: true 
+            about: merge the *ex_args* in the config \*.ucmd*\ as command final.
   - init:
       about: gen config file for ucmd use
       version: "1.0"

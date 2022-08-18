@@ -11,6 +11,8 @@ struct BuildPlayer<'a> {
     platform: String,
     ///工程路径
     proj_path: String,
+    ///额外的参数
+    ex_args: Option<&'a str>
 }
 
 impl<'a> BaseCmd for BuildPlayer<'_> {
@@ -40,6 +42,7 @@ impl<'a> BaseCmd for BuildPlayer<'_> {
         //_outputPath
         //_targetPlatform
         m_ucmdex_args += ucmdex_args;
+        m_ucmdex_args += self.ex_args.ok_or("").unwrap();
         m_ucmdex_args += format!(" -_outputPath:{}", build_path.display()).as_str();
         m_ucmdex_args += format!(" -_targetPlatform:{}", &self.platform).as_str();
 
@@ -71,11 +74,12 @@ impl<'a> BaseCmd for BuildPlayer<'_> {
 }
 
 impl<'a> BuildPlayer<'a> {
-    fn new(path: &str, platform: String, conf_file: Option<&'a str>) -> Self {
+    fn new(path: &str, platform: String, conf_file: Option<&'a str>, ex_args: Option<&'a str>) -> Self {
         BuildPlayer {
             conf_file,
             platform,
             proj_path: path.to_string(),
+            ex_args
         }
     }
 }
@@ -83,11 +87,12 @@ impl<'a> BuildPlayer<'a> {
 pub fn handle(subm: &ArgMatches) {
     let target = subm.value_of("platform");
     let config = subm.value_of("config");
+    let ex_args = subm.value_of("ex_args");
 
     let cur_dir = std::env::current_dir().unwrap();
     let cur_path = cur_dir.to_str().unwrap();
     let proj_path = subm.value_of("path").unwrap_or_else(|| cur_path); //这里其实也不用match了 clap的require参数不符合clap就会过滤掉
-    let cmd = &BuildPlayer::new(proj_path, target.unwrap().to_string(), config);
+    let cmd = &BuildPlayer::new(proj_path, target.unwrap().to_string(), config, ex_args);
     cmd.run();
 }
 

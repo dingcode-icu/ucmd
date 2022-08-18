@@ -1,10 +1,9 @@
 #======================
 #BASE 
 #======================
-bin: D:\\Program\\UnityEditor\\2021.3.5f1c1\\Editor\\Unity.exe     
-
+bin: /Applications/Unity/Hub/Editor/2021.3.5f1c1/Unity.app/Contents/MacOS/Unity
+ 
 args: -quit -batchmode 
-
 android:
   path:  
 
@@ -25,6 +24,6 @@ method: Ucmd.BuildPlayer.StaticCall.Run
 # -subTarget:string     纹理默认格式
 
 #----ios
-# -todo                 
+# -subTarget:string     纹理默认格式
 
 ex_args: -isRelease:true
