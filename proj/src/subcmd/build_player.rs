@@ -42,7 +42,7 @@ impl<'a> BaseCmd for BuildPlayer<'_> {
         //_outputPath
         //_targetPlatform
         m_ucmdex_args += ucmdex_args;
-        m_ucmdex_args += self.ex_args.ok_or("").unwrap();
+        m_ucmdex_args += self.ex_args.or(Some("")).unwrap();
         m_ucmdex_args += format!(" -_outputPath:{}", build_path.display()).as_str();
         m_ucmdex_args += format!(" -_targetPlatform:{}", &self.platform).as_str();
 
