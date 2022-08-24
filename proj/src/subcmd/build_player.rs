@@ -12,7 +12,7 @@ struct BuildPlayer<'a> {
     ///工程路径
     proj_path: String,
     ///额外的参数
-    ex_args: Option<&'a str>
+    ex_args: Option<&'a str>,
 }
 
 impl<'a> BaseCmd for BuildPlayer<'_> {
@@ -20,14 +20,18 @@ impl<'a> BaseCmd for BuildPlayer<'_> {
         info!("build-player in ->{}", self.proj_path);
         let conf_file = if self.conf_file.is_none() {
             Path::new(&self.proj_path).join(".ucmd")
-        }
-        else{
+        } else {
             Path::new(&self.proj_path).join(&self.conf_file.unwrap())
         };
         println!("ucmd config file is {}", conf_file.display());
         let build_config = BuildPlayer::parse_yaml(conf_file.to_str().unwrap());
         let mut m_ucmdex_args: String = String::from("");
-        let ucmdex_args = build_config["ex_args"].as_str().unwrap();
+        let ucmdex_args =
+            if build_config["ex_args"].is_badvalue() || build_config["ex_args"].is_null() {
+                None
+            } else {
+                Some(build_config["ex_args"].as_str().unwrap())
+            };
 
         //chk build path
         //append ucmndex_args
@@ -37,11 +41,14 @@ impl<'a> BaseCmd for BuildPlayer<'_> {
             .join(&self.platform);
         //output path
         if !Path::new(build_path.as_path()).is_dir() {
-            std::fs::create_dir_all(build_path.as_path()).expect("create dir <.ucmd_build> failed!");
+            std::fs::create_dir_all(build_path.as_path())
+                .expect("create dir <.ucmd_build> failed!");
         }
         //_outputPath
         //_targetPlatform
-        m_ucmdex_args += ucmdex_args;
+        if ucmdex_args.is_some(){
+            m_ucmdex_args += ucmdex_args.unwrap();
+        }
         m_ucmdex_args += self.ex_args.or(Some("")).unwrap();
         m_ucmdex_args += format!(" -_outputPath:{}", build_path.display()).as_str();
         m_ucmdex_args += format!(" -_targetPlatform:{}", &self.platform).as_str();
@@ -74,12 +81,17 @@ impl<'a> BaseCmd for BuildPlayer<'_> {
 }
 
 impl<'a> BuildPlayer<'a> {
-    fn new(path: &str, platform: String, conf_file: Option<&'a str>, ex_args: Option<&'a str>) -> Self {
+    fn new(
+        path: &str,
+        platform: String,
+        conf_file: Option<&'a str>,
+        ex_args: Option<&'a str>,
+    ) -> Self {
         BuildPlayer {
             conf_file,
             platform,
             proj_path: path.to_string(),
-            ex_args
+            ex_args,
         }
     }
 }
@@ -103,7 +115,11 @@ fn test_buildplayer() {
         .parent()
         .unwrap()
         .join("test");
-    let cmd = &BuildPlayer::new(proj_path.to_str().unwrap(), "ios".to_string(), Some(".ucmd_2"));
+    let cmd = &BuildPlayer::new(
+        proj_path.to_str().unwrap(),
+        "ios".to_string(),
+        Some(".ucmd_2"),
+    );
     cmd.run();
 
     cmd.execute_hook(

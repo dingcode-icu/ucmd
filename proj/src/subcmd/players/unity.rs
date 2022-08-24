@@ -29,7 +29,6 @@ impl UnityProj<'_>{
         let args_base = config["args"].as_str().unwrap();
         let unity_proj = self.proj_path;
         let method = config["method"].as_str().unwrap();
-        let ucmdex_args = config["ex_args"].as_str().unwrap();
         //log file
         let log_path = std::env::current_dir().unwrap().join(".ucmd_build");
         let log_f = log_path.join(format!("{}_unity.log",  Local::now().format("%Y_%m%d_%H%M")));
