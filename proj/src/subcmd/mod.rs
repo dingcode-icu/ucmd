@@ -19,6 +19,7 @@ impl Display for BuildType {
             BuildType::Android => { write!(f, "android") }
             BuildType::Ios => { write!(f, "ios") }
             BuildType::Ab => { write!(f, "ab") }
+            BuildType::UnSupport => { write!(f, "unsupport") }
         }
     }
 }

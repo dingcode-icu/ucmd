@@ -20,9 +20,6 @@ fn main() {
             "build-player" => {
                 subcmd::build_player::handle(sub_m);
             }
-            "build-ab" => {
-                subcmd::build_ab::handle(sub_m);
-            }
             _ => {
                 app.print_help().unwrap();
             }
