@@ -25,40 +25,16 @@ impl<'a> BaseCmd for BuildPlayer<'_> {
         };
         println!("ucmd config file is {}", conf_file.display());
         let build_config = BuildPlayer::parse_yaml(conf_file.to_str().unwrap());
-        let mut m_ucmdex_args: String = String::from("");
-        let ucmdex_args =
-            if build_config["ex_args"].is_badvalue() || build_config["ex_args"].is_null() {
-                None
-            } else {
-                Some(build_config["ex_args"].as_str().unwrap())
-            };
-
         //chk build path
-        //append ucmndex_args
-        let build_path = std::env::current_dir()
-            .unwrap()
-            .join(".ucmd_build")
-            .join(&self.platform);
-        //output path
-        if !Path::new(build_path.as_path()).is_dir() {
-            std::fs::create_dir_all(build_path.as_path())
-                .expect("create dir <.ucmd_build> failed!");
-        }
-        //_outputPath
-        //_targetPlatform
-        if ucmdex_args.is_some(){
-            m_ucmdex_args += ucmdex_args.unwrap();
-        }
-        m_ucmdex_args += self.ex_args.or(Some("")).unwrap();
-        m_ucmdex_args += format!(" -_outputPath:{}", build_path.display()).as_str();
-        m_ucmdex_args += format!(" -_targetPlatform:{}", &self.platform).as_str();
-
-        // before hook
-        let hook_params = vec![m_ucmdex_args.to_string()];
+        let build_path = self.gen_build_path(String::from(self.platform.as_str()));
+        //hook args
+        let hook_args = self.get_hook_exargs(&build_config, &build_path, String::from(&self.platform), self.ex_args);
+        //before hook
+        let hook_argvec = vec![hook_args.to_string()];
         self.execute_hook(
             self.proj_path.as_str(),
             HookSupport::BeforeBinBuild,
-            &hook_params,
+            &hook_argvec,
         );
         // bin execute
         let suc = self.gen_target(
@@ -66,7 +42,7 @@ impl<'a> BaseCmd for BuildPlayer<'_> {
             &build_config,
             &self.platform,
             build_path.display().to_string().as_str(),
-            m_ucmdex_args.as_str(),
+            hook_args.as_str(),
         );
         if !suc {
             exit(2);
@@ -75,7 +51,7 @@ impl<'a> BaseCmd for BuildPlayer<'_> {
         self.execute_hook(
             self.proj_path.as_str(),
             HookSupport::AfterBinBuild,
-            &hook_params,
+            &hook_argvec,
         );
     }
 }
@@ -115,16 +91,4 @@ fn test_buildplayer() {
         .parent()
         .unwrap()
         .join("test");
-    let cmd = &BuildPlayer::new(
-        proj_path.to_str().unwrap(),
-        "ios".to_string(),
-        Some(".ucmd_2"),
-    );
-    cmd.run();
-
-    cmd.execute_hook(
-        proj_path.to_str().unwrap(),
-        HookSupport::BeforeBinBuild,
-        &vec!["a".to_string(), "b".to_string()],
-    )
 }

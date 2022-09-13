@@ -1,5 +1,5 @@
 use std::io::Read;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::fmt;
 use std::fmt::{Formatter};
 use std::fs;
@@ -125,8 +125,49 @@ pub(crate) trait BaseCmd {
         info!("{}", format!("No hook {}", &h_path.to_str().unwrap()));
     }
 
+    ///根据配置检查默认内置参数
+    fn get_hook_exargs(&self, build_config:&Yaml, build_path:&PathBuf, platform: String, ex_args:Option<&str>) -> String{
+        let mut m_ucmdex_args: String = String::from("");
+        let ucmdex_args =
+            if build_config["ex_args"].is_badvalue() || build_config["ex_args"].is_null() {
+                None
+            } else {
+                Some(build_config["ex_args"].as_str().unwrap())
+            };
+        if ucmdex_args.is_some(){
+            m_ucmdex_args += ucmdex_args.unwrap();
+        }
+        m_ucmdex_args += ex_args.or(Some("")).unwrap();
+        m_ucmdex_args += format!(" -_outputPath:{}", build_path.display()).as_str();
+        m_ucmdex_args += format!(" -_targetPlatform:{}", platform).as_str();
+        m_ucmdex_args
+    }
+
+
+    ///生成build文件夹初始化
+    fn gen_build_path(&self, subname: String) -> PathBuf{
+        //append ucmndex_args
+        let build_path = self.get_build_path(subname);
+        //output path
+        if !Path::new(build_path.as_path()).is_dir() {
+            std::fs::create_dir_all(build_path.as_path())
+                .expect("create dir <.ucmd_build> failed!");
+        }
+        build_path
+    }
+
+    ///build路径
+    fn get_build_path(&self, subname: String) -> PathBuf{
+        let build_path = std::env::current_dir()
+            .unwrap()
+            .join(".ucmd_build")
+            .join(subname);
+        build_path
+    }
+
     ///执行bin cmd
     fn gen_target(&self, proj_path:&str, config: &Yaml, plat: &str, build_path: &str, ex_cmd: &str) -> bool {
+        self.gen_build_path(plat.to_string());
         let cmd = config["bin"].as_str().unwrap();
         let cmd_type = config["bin_type"].as_str().or(Some("unity")).unwrap(); 
 
