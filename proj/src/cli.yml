@@ -3,23 +3,6 @@ version: "1.1"
 author: dwb <dwb@dwb.ren>
 about: Helpful for game project build&&compile
 subcommands:
-  - build-ab:
-      about: build the assetbundle
-      version: "1.0.0"
-      author: dwb <dwb@dwb.ren>
-      args:
-        - platform:
-            required: true
-            about: the ab assetbundle build for
-        - isonly-prefab:
-            short: p
-            about: if only include the prefab file inside
-        - env:
-            required: true
-            about: \*.ucmd*\ file path to confirm the publish env
-        - ab_config:
-            required: true
-            about: the ab build path relative to unity proj's root-path
   - build-player:
       about: build the player
       version: "1.0"
