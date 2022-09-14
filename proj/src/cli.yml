@@ -1,5 +1,5 @@
 name: ucmd
-version: "1.1"
+version: "1.0.0"
 author: dwb <dwb@dwb.ren>
 about: Helpful for game project build&&compile
 subcommands:
@@ -8,9 +8,9 @@ subcommands:
       version: "1.0"
       author: dwb <dwb@dwb.com>
       args:
-        - platform:
+        - target:
             required: true
-            about: the platform env run in
+            about: the target to build - like  android|ios|ab
         - config:
             short: c
             takes_value: true
@@ -19,6 +19,10 @@ subcommands:
             short: ex 
             takes_value: true 
             about: merge the *ex_args* in the config \*.ucmd*\ as command final.
+
+        - path: 
+            takes_value: true
+            about: the path with .ucmd for build
   - init:
       about: gen config file for ucmd use
       version: "1.0"

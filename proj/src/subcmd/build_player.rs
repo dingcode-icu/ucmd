@@ -74,7 +74,7 @@ impl<'a> BuildPlayer<'a> {
 }
 
 pub fn handle(subm: &ArgMatches) {
-    let target = subm.value_of("platform");
+    let target = subm.value_of("target");
     let config = subm.value_of("config");
     let ex_args = subm.value_of("ex_args");
     let cur_dir = std::env::current_dir().unwrap();
