@@ -1,4 +1,4 @@
-use log::{info, error};
+use log::{error, info};
 use rcmd_core::clap::ArgMatches;
 
 use crate::subcmd::basecmd::{BaseCmd, HookSupport};
@@ -28,9 +28,11 @@ impl<'a> BaseCmd for BuildPlayer<'_> {
         println!("ucmd config file is {}", conf_file.display());
         let build_config = BuildPlayer::parse_yaml(conf_file.to_str().unwrap());
         //chk build path
-        let build_path = self.gen_build_path(self.build_type);
+        let build_path =
+            self.gen_build_path(Path::new(&self.proj_path).to_path_buf(), self.build_type);
         //hook args
-        let hook_args = self.get_hook_exargs(&build_config, &build_path, self.build_type, self.ex_args);
+        let hook_args =
+            self.get_hook_exargs(&build_config, &build_path, self.build_type, self.ex_args);
         let hook_argvec = vec![hook_args.to_string()];
         self.execute_hook(
             self.proj_path.as_str(),
@@ -80,15 +82,15 @@ pub fn handle(subm: &ArgMatches) {
     let cur_dir = std::env::current_dir().unwrap();
     let cur_path = cur_dir.to_str().unwrap();
     let proj_path = subm.value_of("path").unwrap_or_else(|| cur_path); //这里其实也不用match了 clap的require参数不符合clap就会过滤掉
-    //chk buildtype support 
+                                                                       //chk buildtype support
     let bt = BuildType::from(target.unwrap().to_string());
 
-    match bt{
-        BuildType::UnSupport=>{
+    match bt {
+        BuildType::UnSupport => {
             error!("ucmd build target <{}> not support yet!", target.unwrap());
             std::process::exit(1)
         }
-        _=>{}
+        _ => {}
     }
 
     let cmd = &BuildPlayer::new(proj_path, bt, config, ex_args);

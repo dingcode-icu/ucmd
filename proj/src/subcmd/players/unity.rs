@@ -1,9 +1,9 @@
+use super::BinCmd;
 use crate::subcmd::BuildType;
 use log::info;
 use rcmd_core::chrono::Local;
 use rcmd_core::yaml_rust::Yaml;
-
-use super::BinCmd;
+use std::path::{Path, PathBuf};
 
 pub struct UnityProj<'a> {
     proj_path: &'a str,
@@ -38,7 +38,7 @@ impl UnityProj<'_> {
         let unity_proj = self.proj_path;
         let method = config["method"].as_str().unwrap();
         //log file
-        let log_path = std::env::current_dir().unwrap().join(".ucmd_build");
+        let log_path = Path::new(unity_proj).join(".ucmd_build");
         let log_f = log_path.join(format!("{}_unity.log", Local::now().format("%Y_%m%d_%H%M")));
         let args_str = format!(
             "{args_base} \
