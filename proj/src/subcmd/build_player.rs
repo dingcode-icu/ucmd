@@ -30,14 +30,14 @@ impl<'a> BaseCmd for BuildPlayer<'_> {
         //chk build path
         let build_path =
             self.gen_build_path(Path::new(&self.proj_path).to_path_buf(), self.build_type);
-        //hook args
-        let hook_args =
+        //ucmdex_args
+        let ucmdex_argsstr =
             self.get_hook_exargs(&build_config, &build_path, self.build_type, self.ex_args);
-        let hook_argvec = vec![hook_args.to_string()];
+        let mut ucmdex_args = vec![ucmdex_argsstr];
         self.execute_hook(
             self.proj_path.as_str(),
             HookSupport::BeforeBinBuild,
-            &hook_argvec,
+            &ucmdex_args,
         );
         // bin execute
         let suc = self.gen_target(
@@ -45,16 +45,17 @@ impl<'a> BaseCmd for BuildPlayer<'_> {
             &build_config,
             self.build_type,
             build_path.display().to_string().as_str(),
-            hook_args.as_str(),
+            & mut ucmdex_args,
         );
         if !suc {
+            println!("[error]gen_target not success!");
             exit(2);
         }
         // after hook
         self.execute_hook(
             self.proj_path.as_str(),
             HookSupport::AfterBinBuild,
-            &hook_argvec,
+            & mut ucmdex_args,
         );
     }
 }

@@ -9,7 +9,7 @@ pub struct CocosCreatorV2Proj<'a> {
     config: &'a Yaml,
     plat: BuildType,
     build_path: &'a str,
-    ex_cmd: &'a str,
+    ucmdex_args: &'a Vec<String>,
 }
 
 impl<'a> CocosCreatorV2Proj<'a> {
@@ -18,14 +18,14 @@ impl<'a> CocosCreatorV2Proj<'a> {
         config: &'a Yaml,
         plat: BuildType,
         build_path: &'a str,
-        ex_cmd: &'a str,
+        ucmdex_args: &'a Vec<String>,
     ) -> Self {
         CocosCreatorV2Proj {
             proj_path,
             config,
             plat,
             build_path,
-            ex_cmd,
+            ucmdex_args,
         }
     }
 }
@@ -41,12 +41,12 @@ impl CocosCreatorV2Proj<'_> {
         -executeMethod {method} \
         -projectPath {cocos_proj} \
         -targetPlatform:{plat} \
-        {ex_cmd}",
+        {ucmdex_args}",
             args_base = args_base,
             method = method,
             cocos_proj = cocos_proj,
             plat = self.plat,
-            ex_cmd = self.ex_cmd
+            ucmdex_args = self.ucmdex_args.join(" ")
         );
         let args: Vec<String> = args_str.split(" ").map(|v| v.to_string()).collect();
         info!("Gen the cocos asset...");
@@ -55,11 +55,11 @@ impl CocosCreatorV2Proj<'_> {
 }
 
 impl BinCmd for CocosCreatorV2Proj<'_> {
-    fn build_ab(&self) -> Vec<String> {
+    fn build_ab(&mut self) -> Vec<String> {
         self.base_cmd()
     }
 
-    fn build_player(&self) -> Vec<String> {
+    fn build_player(&mut self) -> Vec<String> {
         self.base_cmd()
     }
 }

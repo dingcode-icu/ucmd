@@ -182,7 +182,8 @@ pub(crate) trait BaseCmd {
         config: &Yaml,
         build_type: BuildType,
         build_path: &str,
-        ex_cmd: &str,
+        // ex_cmd: &str,
+        ucmdex_args: & mut Vec<String>
     ) -> bool {
         self.gen_build_path(Path::new(proj_path).to_path_buf(), build_type);
         let cmd = config["bin"].as_str().unwrap();
@@ -192,9 +193,9 @@ pub(crate) trait BaseCmd {
         let p_type: PlayerType = cmd_type.to_string().into();
         if p_type != PlayerType::UnKnown {
             if p_type == PlayerType::Unity {
-                args = UnityProj::new(proj_path, config, build_type, build_path, ex_cmd).base_cmd();
+                args = UnityProj::new(proj_path, config, build_type, build_path, ucmdex_args).base_cmd();
             } else if p_type == PlayerType::CocosCreatorv2 {
-                args = CocosCreatorV2Proj::new(proj_path, config, build_type, build_path, ex_cmd)
+                args = CocosCreatorV2Proj::new(proj_path, config, build_type, build_path, ucmdex_args)
                     .base_cmd();
             } else {
                 warn!("[basecmd] not found the player type {:?}", cmd_type);
