@@ -2,13 +2,8 @@
 #BASE 
 #======================
 bin: /Applications/Unity/Hub/Editor/2021.3.5f1c1/Unity.app/Contents/MacOS/Unity
- 
 args: -quit -batchmode 
-android:
-  path:  
 
-ios:
-  path:  
 #======================
 #UCMD EXTRA
 #======================
@@ -16,14 +11,14 @@ ios:
 method: Ucmd.BuildPlayer.StaticCall.Run
 
 #extra args supported:
-# -isRelease:boolean     是否是发布版本
-# -buildSymbols:string   C#宏
-# -isExportProj:boolean  是否导出工程本身
+# -isRelease:boolean     
+# -buildSymbols:string   c# symbols
+# -isExportProj:boolean  if export the packages
 
 #----android
-# -subTarget:string     纹理默认格式
+# -subTarget:string      android texture target
 
 #----ios
-# -subTarget:string     纹理默认格式
+# -subTarget:string      ios texture target
 
 ex_args: -isRelease:true

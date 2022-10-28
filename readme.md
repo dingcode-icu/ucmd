@@ -1,62 +1,90 @@
-
-### Attention
-工具本身需要依赖对应的unity package配合使用
+:anchor: More user-friendly command line when build unity  g
 
 ### Desc
 
-针对unity的命令行工具
-
-工程路径：
-```
-----|-proj           //rust工程本身
-    |-build          //构建结果
-    |-doc            //文档
-    |-makefile       //构建脚本
-```
+* Extern useful command params for unity 
+* Support hook include [beforebinarybuild, afterbinarybuild]
+* Including but not limited to [andorid, ios, bundle]
 
 ### Usage
 
+**make sure ucmd is executable** If not ,execute like this :
 
-## 构建
-> make clean && make
+##### mac & linux 
 
-## 使用
-> sh:ucmd <subcommand> [options] [args] params..
+> chmod a+x ./ucmd
 
-#### 支持的子命令subcommand:
+##### windows (just makesure ucmd.exe exists)
 
-##### build-player
+```
+ucmd -h 
+ucmd 1.0.0
+dwb <dwb@dwb.ren>
+Helpful for game project build&&compile
+USAGE:
+    ucmd [SUBCOMMAND]
+FLAGS:
+    -h, --help       Print help information
+    -V, --version    Print version information
+SUBCOMMANDS:
+    build-player    build the player
+    help            Print this message or the help of the given subcommand(s)
+    init            gen config file for ucmd use
+```
 
- 用于构建unity各个平台播放器
 
->  ucmd build-player [FLAGS] <platform> <config>
 
-config是环境配置文件，配置格式使用yaml,示例配置如下:
+###### Step1.
+
+Add **upm** in unity dependencies with **UcmdExtra**
+
+> https://github.com/dwbmio/ucmd-extra.git
+
+
+
+#### Step2.
+
+Init in your unity project's root path
+
+> ucmd init 
+
+It will create a file <mark>.ucmd</mark> in the path.
 
 ```yaml
-#==========reuqire==========
+#======================
+#BASE 
+#======================
+bin: /Applications/Unity/Hub/Editor/2021.3.5f1c1/Unity.app/Contents/MacOS/Unity
+args: -quit -batchmode 
+#======================
+#UCMD EXTRA
+#======================
+#needed 'ucmd-extra' upm's plugin installed in project
+method: Ucmd.BuildPlayer.StaticCall.Run
 
-unity_bin : $Unity                         #unity可执行文件 ex:/Applications/Unity/Hub/Editor/2019.4.26f1c1/Unity.app/Contents/MacOS/Unity
-unity_proj : $proj root path               #unity工程路径
-log_output_path : $/Users/mac/Desktop      #unity日志输路径
-args: -quit -batchmode -isRelease:debug    #通用参数(-isRelease不可删除)
-#==========reuqire==========
+#extra args supported:
+# -isRelease:boolean     
+# -buildSymbols:string   c# symbols
+# -isExportProj:boolean  
 
+#----android
+# -subTarget:string     texture target
 
+#----ios
+# -subTarget:string     texture target
 
-#==========android reuqire==========
-android:
-  na_path : $原生工程路径
-  method : Ucmd.BuildPlayer.PerformBuildAndroid.ExportProjAsset      #v1.0.0 Ucmd-buildplayer
-#==========android reuqire==========
-
-
-#==========ios reuqire==========
-ios :
-  na_path : $原生工程路径
-  method : ZybEditor.PerformBuild.ExportProjAsset
-#==========ios reuqire==========
-
+ex_args: -isRelease:true
 
 ```
 
+##### Step3.
+
+Command to build 
+
+> ucmd build-player . 
+
+detail params for build-player  
+
+you can run **-help** to check 
+
+> ucmd build-player -h 
