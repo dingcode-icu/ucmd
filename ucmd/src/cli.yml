@@ -22,7 +22,7 @@ subcommands:
 
         - path: 
             takes_value: true
-            about: the path with .ucmd for build
+            about: the root path of `unity|cocos` project
   - init:
       about: gen config file for ucmd use
       version: "1.0"

@@ -33,9 +33,6 @@ impl NaAction for AndroidNa{
         let f_name = format!("{}_{}.zip", b.plat, b.ver).to_string();
         let build_p = b.proj_path.join(format!(".ucmd_build/{}", b.plat));
         let build_zip = b.proj_path.join(format!(".ucmd_build/{f}", f = f_name));
-        println!("build zip is {}", build_zip.display());
-        println!("build_p is {}", build_p.display());
-
         match o_type {
             "1" => {
                 //build gradle
@@ -51,11 +48,11 @@ impl NaAction for AndroidNa{
                     std::process::exit(1)
                 };
                 println!("pack <unitylibrary> module...");
-                AndroidNa::pack_build(&build_zip, o_type)
+                AndroidNa::pack_build(&build_p, &build_zip, o_type)
             }
             _ => { 
                 println!("pack all module...");
-                AndroidNa::pack_build(&build_zip, o_type)
+                AndroidNa::pack_build(&build_p, &build_zip, o_type)
             }
         };
 
@@ -65,14 +62,13 @@ impl NaAction for AndroidNa{
         }
     }
 
-    fn pack_build(build_zip: &PathBuf, p_type: &str) {
-        let build_p = build_zip.to_path_buf();
+    fn pack_build(fom_dr: &PathBuf,  tar_zip: &PathBuf, p_type: &str) {
         match p_type {
             "1" => {
-                pack_gradle_gen(build_p, build_zip.clone());
+                pack_gradle_gen(&fom_dr, &tar_zip);
             }
             _ => {
-                pack_all_gen(build_p, build_zip.clone());
+                pack_all_gen(&fom_dr, &tar_zip);
             }
         }
     }
@@ -102,7 +98,7 @@ pub async fn build_gradle(path: &PathBuf, isdev: bool) -> bool {
     issuc
 }
 
-fn pack_gradle_gen(proj_path: PathBuf, tar_file: PathBuf) {
+fn pack_gradle_gen(gen_path: &PathBuf, tar_file: &PathBuf) {
     //select build  resoruces
     let lib_gen = vec![
         "unityLibrary/build/outputs/",
@@ -117,7 +113,7 @@ fn pack_gradle_gen(proj_path: PathBuf, tar_file: PathBuf) {
     let handle =
         |_: TransitProcess| fs_extra::dir::TransitProcessResult::ContinueOrAbort;
     for _s in lib_gen {
-        let pack_t = proj_path.join(_s);
+        let pack_t = gen_path.join(_s);
         from_paths.push(pack_t);
     }
     let options = dir::CopyOptions::new(); //
@@ -137,11 +133,12 @@ fn pack_gradle_gen(proj_path: PathBuf, tar_file: PathBuf) {
     }
 }
 
-fn pack_all_gen(proj_path: PathBuf, tar_file: PathBuf) {
-    let _ = zip_create_from_directory_with_options(
+fn pack_all_gen(gen_path: &PathBuf, tar_file: &PathBuf) {
+    println!("{} gen path is -->?", gen_path.display());
+    zip_create_from_directory_with_options(
         &tar_file,
-        &proj_path,
+        &gen_path,
         FileOptions::default().compression_method(zip::CompressionMethod::Bzip2),
     )
-    .expect("zip build target raise error!\n");
+    .expect(format!("zip build target raise error!dir={}, tarfile={}", &tar_file.display(), &gen_path.display()).as_str());
 }

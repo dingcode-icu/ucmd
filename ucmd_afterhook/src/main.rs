@@ -49,7 +49,7 @@ async fn main() {
     let cur = std::env::current_exe().unwrap();
     let ver = chrono::Local::now().format("%m%d-%H%M%S");
     let def_log = &String::from("None");
-    let proj_path = cur.parent().unwrap().join("../"); 
+    let proj_path = cur.parent().unwrap().parent().unwrap(); 
     let log_f = arg_map.get("logFile").or(Some(def_log)).unwrap();
     //chk platfom
     let bhook = BuildBinHook {

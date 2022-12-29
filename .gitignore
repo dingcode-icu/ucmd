@@ -7,6 +7,7 @@
 target/
 
 
-# Added by cargo
-
-/target
+#test 
+test/.ucmd_build
+test/*.exe
+test/.ucmd_hook/*

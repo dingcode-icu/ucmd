@@ -104,7 +104,7 @@ pub trait NaAction {
         arg_map: HashMap<String, String>
     );
     
-    fn pack_build(from: &PathBuf, p_type: &str);
+    fn pack_build(from_dir: &PathBuf, to_file: &PathBuf, p_type: &str);
 }
 
 pub async fn run_sh(cmd: &str, args: &Vec<String>) -> (bool, String) {
