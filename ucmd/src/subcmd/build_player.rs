@@ -25,7 +25,6 @@ impl<'a> BaseCmd for BuildPlayer<'_> {
         } else {
             Path::new(&self.proj_path).join(&self.conf_file.unwrap())
         };
-        println!("ucmd config file is {}", conf_file.display());
         let build_config = BuildPlayer::parse_yaml(conf_file.to_str().unwrap());
         //chk build path
         let build_path =

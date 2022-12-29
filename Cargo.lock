@@ -1376,6 +1376,8 @@ dependencies = [
  "chrono",
  "dotenv",
  "fs_extra",
+ "log",
+ "rcmd-core",
  "reqwest",
  "serde",
  "serde_json",

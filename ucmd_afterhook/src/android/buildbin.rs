@@ -33,6 +33,7 @@ impl NaAction for AndroidNa{
         let f_name = format!("{}_{}.zip", b.plat, b.ver).to_string();
         let build_p = b.proj_path.join(format!(".ucmd_build/{}", b.plat));
         let build_zip = b.proj_path.join(format!(".ucmd_build/{f}", f = f_name));
+
         match o_type {
             "1" => {
                 //build gradle

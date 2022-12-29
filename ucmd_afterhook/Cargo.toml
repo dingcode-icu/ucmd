@@ -6,6 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+log = "0.4"
 zip = "0.5"
 zip-extensions = "0.6" 
 chrono = "0.4.22"
@@ -17,3 +18,4 @@ reqwest = { version = "0.11", features = ["json"] }
 tokio = { version = "1", features = ["full"] }
 async-trait = "0.1.60"
 dotenv = "0.15.0"
+rcmd-core = { git = "https://gitee.com/heyzf/rcmd-core.git", branch="master"}
