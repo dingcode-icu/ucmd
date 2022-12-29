@@ -3,6 +3,11 @@ name = "ucmd"
 version = "0.1.1"
 edition = "2018"
 
+
+[[bin]]
+name = "ucmd"
+path = "src/main.rs"
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
@@ -10,6 +15,3 @@ log = "0.4"
 serde_json = "1.0.59"
 rcmd-core = { git = "https://gitee.com/heyzf/rcmd-core.git", branch="master"}
 
-[profile.release]
-lto = true
-opt-level = "z"

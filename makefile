@@ -16,3 +16,9 @@ clean:
 windows:
 	cd ${PROJ_DIR} && ${CARGO_BIN} build  --release  --target stable-x86_64-pc-windows-msvc
 	upx ${PORJ_WIN_DIR}
+
+dev_win: 
+	cargo build
+	cp ./target/debug/ucmd.exe ./test/ucmd.exe
+	cp ./target/debug/ucmd_afterbin.exe ./test/.ucmd_hook/AfterBinBuild
+	

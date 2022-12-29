@@ -6,9 +6,30 @@
 * Support hook include [beforebinarybuild, afterbinarybuild]
 * Including but not limited to [andorid, ios, bundle]
 
+
+### Build && Debug
+
+#### build single bin 
+
+>cargo build --bin <BIN_NAME>
+
+#### build all bin 
+
+>cargo build 
+
+#### debug by test reources 
+
+>cd $proj_root && make dev 
+
+>cd &test 
+
+>ucmd build -c ./ucmd android|ios <$PROJ_PATH>
+
 ### Usage
 
 **make sure ucmd is executable** If not ,execute like this :
+
+
 
 ##### mac & linux 
 
@@ -63,7 +84,7 @@ args: -quit -batchmode
 method: Ucmd.BuildPlayer.StaticCall.Run
 
 #extra args supported:
-# -isRelease:boolean     
+# -isDev:boolean     
 # -buildSymbols:string   c# symbols
 # -isExportProj:boolean  
 
@@ -73,7 +94,7 @@ method: Ucmd.BuildPlayer.StaticCall.Run
 #----ios
 # -subTarget:string     texture target
 
-ex_args: -isRelease:true
+ex_args: -isDev:true
 
 ```
 

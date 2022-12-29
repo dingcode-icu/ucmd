@@ -1,0 +1,32 @@
+name: ucmd
+version: "1.0.0"
+author: dwb <dwb@dwb.ren>
+about: Helpful for game project build&&compile
+subcommands:
+  - build-player:
+      about: build the player
+      version: "1.0"
+      author: dwb <dwb@dwb.com>
+      args:
+        - target:
+            required: true
+            about: the target to build - like  android|ios|ab
+        - config:
+            short: c
+            takes_value: true
+            about: the project's config file replace the default file \*.ucmd*\ 
+        - ex_args: 
+            short: ex 
+            takes_value: true 
+            about: merge the *ex_args* in the config \*.ucmd*\ as command final.
+
+        - path: 
+            takes_value: true
+            about: the path with .ucmd for build
+  - init:
+      about: gen config file for ucmd use
+      version: "1.0"
+      author: dwb <dwb@dwb.ren>
+      args:
+        - path:
+            about: the proj's root path

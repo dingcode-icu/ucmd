@@ -5,3 +5,8 @@
 .vscode/
 .idea/
 target/
+
+
+# Added by cargo
+
+/target

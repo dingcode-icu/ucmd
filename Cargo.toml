@@ -1,0 +1,10 @@
+[workspace]
+members = [
+    "ucmd", 
+    "ucmd_afterhook"
+]
+
+
+[profile.release]
+lto = true
+opt-level = "z"
